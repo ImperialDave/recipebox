@@ -85,7 +85,7 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
                     {categoryItems.map((item) => (
                       <li
                         key={item.id}
-                        className="flex items-center gap-3 p-3 rounded-xl bg-white border border-cream-300"
+                        className="flex items-center gap-3 p-3 rounded-xl bg-cream-50 border border-cream-300"
                       >
                         <Checkbox
                           checked={item.checked}

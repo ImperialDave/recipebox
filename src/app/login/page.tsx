@@ -66,8 +66,8 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left text-sm text-amber-950">
-              <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
+            <div className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
+              <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
               <p>
                 <strong>Can&apos;t find the email?</strong> Magic link messages often land in your{" "}
                 <strong>spam or junk folder</strong>. Check there if nothing arrives in your inbox
@@ -152,7 +152,7 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-brown-500 mt-6">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-sage-600 font-medium hover:underline">
+              <Link href="/signup" className="text-sage-600 dark:text-sage-400 font-medium hover:underline">
                 Sign up
               </Link>
             </p>

@@ -228,7 +228,7 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
               </Link>
             )}
             {isOwner && (
-              <Button variant="outline" onClick={() => setDeleteDialog(true)} className="text-red-600">
+              <Button variant="outline" onClick={() => setDeleteDialog(true)} className="text-red-600 dark:text-red-400">
                 <Trash2 className="h-4 w-4 mr-1" />
                 Delete
               </Button>
@@ -343,7 +343,7 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
             </h2>
             <div className="space-y-4 mb-6">
               {comments.map((comment) => (
-                <div key={comment.id} className="flex gap-3 p-4 rounded-xl bg-white border border-cream-300">
+                <div key={comment.id} className="flex gap-3 p-4 rounded-xl bg-cream-50 border border-cream-300">
                   <Avatar>
                     <AvatarImage src={comment.profile?.avatar_url || undefined} />
                     <AvatarFallback>

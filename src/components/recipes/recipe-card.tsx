@@ -116,7 +116,7 @@ export function RecipeCard({
           )}
           <button
             onClick={handleFavorite}
-            className="absolute top-3 right-3 p-2 rounded-full bg-white/90 shadow-sm hover:bg-white transition-colors"
+            className="absolute top-3 right-3 p-2 rounded-full bg-cream-50/90 shadow-sm hover:bg-cream-50 transition-colors"
           >
             <Star
               className={cn(

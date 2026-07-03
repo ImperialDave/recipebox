@@ -27,8 +27,8 @@ export default function AuthCallbackPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <a href="/login" className="text-sage-600 hover:underline">
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <a href="/login" className="text-sage-600 dark:text-sage-400 hover:underline">
             Back to login
           </a>
         </div>
@@ -39,8 +39,8 @@ export default function AuthCallbackPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-cream-100">
       <div className="text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-sage-600 mx-auto mb-4" />
-        <p className="text-brown-600">Signing you in...</p>
+        <Loader2 className="h-8 w-8 animate-spin text-sage-600 dark:text-sage-400 mx-auto mb-4" />
+        <p className="text-brown-600 dark:text-brown-500">Signing you in...</p>
       </div>
     </div>
   );

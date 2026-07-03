@@ -38,7 +38,7 @@ export function MobileNav() {
                 item.highlight
                   ? "bg-sage-600 text-white -mt-4 shadow-lg rounded-2xl px-4 py-3"
                   : isActive
-                    ? "text-sage-600"
+                    ? "text-sage-600 dark:text-sage-400"
                     : "text-brown-400"
               )}
             >

@@ -120,7 +120,7 @@ export function BackupCard() {
         </p>
 
         {retryAfter !== null && retryAfter > 0 && (
-          <p className="text-sm text-amber-700">
+          <p className="text-sm text-amber-700 dark:text-amber-400">
             You can create another backup in {Math.ceil(retryAfter / 60)} minute
             {Math.ceil(retryAfter / 60) === 1 ? "" : "s"}.
           </p>

@@ -55,7 +55,7 @@ export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brown-400" />
               <Input
                 placeholder="Search recipes, ingredients, tags..."
-                className="pl-10 bg-white"
+                className="pl-10"
                 value={searchQuery}
                 onChange={(e) => onSearch(e.target.value)}
               />

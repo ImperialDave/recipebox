@@ -60,7 +60,7 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
 
   return (
     <div className="fixed inset-0 z-50 bg-cream-100 cooking-mode flex flex-col">
-      <header className="flex items-center justify-between p-4 border-b border-cream-300 bg-white">
+      <header className="flex items-center justify-between p-4 border-b border-cream-300 bg-cream-50">
         <h1 className="font-serif text-xl font-semibold text-brown-800 truncate flex-1">
           {title}
         </h1>
@@ -114,7 +114,7 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
         </Button>
       </div>
 
-      <footer className="flex items-center justify-between p-4 border-t border-cream-300 bg-white gap-4">
+      <footer className="flex items-center justify-between p-4 border-t border-cream-300 bg-cream-50 gap-4">
         <Button
           variant="outline"
           size="lg"

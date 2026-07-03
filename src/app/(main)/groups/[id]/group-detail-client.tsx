@@ -143,7 +143,7 @@ export function GroupDetailClient({
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-white border border-cream-300"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-cream-50 border border-cream-300"
                 >
                   <Avatar>
                     <AvatarImage src={member.profile?.avatar_url || undefined} />

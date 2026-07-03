@@ -38,12 +38,12 @@ export default async function HomePage() {
                 <Plus className="h-8 w-8" />
                 <div>
                   <div className="font-semibold text-lg">Add Recipe</div>
-                  <div className="text-sage-100 text-sm">Share a family favorite</div>
+                  <div className="text-white/80 text-sm">Share a family favorite</div>
                 </div>
               </div>
             </Link>
             <Link href="/recipes">
-              <div className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-cream-300 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-4 p-5 rounded-2xl bg-cream-50 border border-cream-300 hover:shadow-md transition-shadow">
                 <BookOpen className="h-8 w-8 text-sage-600" />
                 <div>
                   <div className="font-semibold text-lg text-brown-800">{recipes.length} Recipes</div>
@@ -52,7 +52,7 @@ export default async function HomePage() {
               </div>
             </Link>
             <Link href="/groups">
-              <div className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-cream-300 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-4 p-5 rounded-2xl bg-cream-50 border border-cream-300 hover:shadow-md transition-shadow">
                 <Users className="h-8 w-8 text-terracotta-500" />
                 <div>
                   <div className="font-semibold text-lg text-brown-800">{groups.length} Groups</div>

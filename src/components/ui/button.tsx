@@ -4,16 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-100 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
   {
     variants: {
       variant: {
         default: "bg-sage-600 text-white shadow-sm hover:bg-sage-700 active:scale-[0.98]",
         destructive: "bg-red-600 text-white shadow-sm hover:bg-red-700",
-        outline: "border-2 border-sage-200 bg-white hover:bg-cream-100 text-brown-800",
+        outline:
+          "border-2 border-cream-300 bg-cream-50 hover:bg-cream-200 text-brown-800",
         secondary: "bg-terracotta-100 text-terracotta-800 hover:bg-terracotta-200",
         ghost: "hover:bg-cream-200 text-brown-700",
-        link: "text-sage-600 underline-offset-4 hover:underline",
+        link: "text-sage-600 underline-offset-4 hover:underline dark:text-sage-400",
       },
       size: {
         default: "h-11 px-5 py-2",
