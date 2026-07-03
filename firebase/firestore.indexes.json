@@ -33,14 +33,6 @@
         { "fieldPath": "week_start", "order": "ASCENDING" },
         { "fieldPath": "day_of_week", "order": "ASCENDING" }
       ]
-    },
-    {
-      "collectionGroup": "items",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        { "fieldPath": "category", "order": "ASCENDING" },
-        { "fieldPath": "ingredient_name", "order": "ASCENDING" }
-      ]
     }
   ],
   "fieldOverrides": []

@@ -69,15 +69,17 @@ export async function addToShoppingList(
   const now = new Date();
 
   for (const item of items) {
+    if (!item.ingredient_name?.trim()) continue;
+
     const ref = db
       .collection("shoppingLists")
       .doc(user.uid)
       .collection("items")
       .doc();
     batch.set(ref, {
-      ingredient_name: item.ingredient_name,
-      quantity: item.quantity,
-      unit: item.unit,
+      ingredient_name: item.ingredient_name.trim(),
+      quantity: item.quantity?.trim() || "",
+      unit: item.unit?.trim() || "",
       category: item.category || "Other",
       checked: false,
       created_at: now,
@@ -87,6 +89,40 @@ export async function addToShoppingList(
   await batch.commit();
   revalidatePath("/shopping-list");
   return { success: true };
+}
+
+export async function addShoppingItem(data: {
+  ingredient_name: string;
+  quantity?: string;
+  unit?: string;
+  category?: string;
+}) {
+  const user = await requireSessionUser();
+  const name = data.ingredient_name?.trim();
+  if (!name) throw new Error("Ingredient name is required");
+
+  const db = getAdminDb();
+  const ref = db.collection("shoppingLists").doc(user.uid).collection("items").doc();
+  const now = new Date();
+
+  const item = {
+    ingredient_name: name,
+    quantity: data.quantity?.trim() || "",
+    unit: data.unit?.trim() || "",
+    category: data.category || "Other",
+    checked: false,
+    created_at: now,
+  };
+
+  await ref.set(item);
+  revalidatePath("/shopping-list");
+
+  return {
+    id: ref.id,
+    user_id: user.uid,
+    ...item,
+    created_at: now.toISOString(),
+  };
 }
 
 export async function toggleShoppingItem(itemId: string, checked: boolean) {

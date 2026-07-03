@@ -343,11 +343,9 @@ export async function getShoppingList() {
     .collection("shoppingLists")
     .doc(sessionUser.uid)
     .collection("items")
-    .orderBy("category")
-    .orderBy("ingredient_name")
     .get();
 
-  return snap.docs.map((doc) => {
+  const items = snap.docs.map((doc) => {
     const data = doc.data();
     return {
       id: doc.id,
@@ -359,5 +357,11 @@ export async function getShoppingList() {
       checked: data.checked ?? false,
       created_at: toISOString(data.created_at),
     };
+  });
+
+  return items.sort((a, b) => {
+    const byCategory = a.category.localeCompare(b.category);
+    if (byCategory !== 0) return byCategory;
+    return a.ingredient_name.localeCompare(b.ingredient_name);
   });
 }

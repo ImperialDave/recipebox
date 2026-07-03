@@ -79,3 +79,15 @@ export const ROLE_DESCRIPTIONS: Record<GroupRole, string> = {
 };
 
 export const DIFFICULTY_LEVELS = ["Easy", "Medium", "Hard"] as const;
+
+export const SHOPPING_CATEGORIES = [
+  "Produce",
+  "Dairy",
+  "Meat & Seafood",
+  "Bakery",
+  "Pantry",
+  "Spices",
+  "Frozen",
+  "Beverages",
+  "Other",
+] as const;
