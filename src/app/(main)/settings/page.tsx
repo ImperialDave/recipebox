@@ -1,0 +1,127 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { AppHeader } from "@/components/layout/app-header";
+import { useTheme } from "@/components/providers/theme-provider";
+import { updateProfile } from "@/lib/actions/auth";
+import { signOutClient } from "@/lib/firebase/auth-client";
+import { toast } from "sonner";
+
+export default function SettingsPage() {
+  const router = useRouter();
+  const { theme, setTheme, textSize, setTextSize } = useTheme();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.profile) {
+          setFullName(data.profile.full_name || "");
+          setEmail(data.profile.email || "");
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateProfile({ full_name: fullName });
+      toast.success("Profile updated");
+    } catch {
+      toast.error("Could not update profile");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOutClient();
+    router.push("/login");
+    router.refresh();
+  };
+
+  return (
+    <>
+      <AppHeader />
+      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <div className="max-w-lg mx-auto space-y-6">
+          <h1 className="font-serif text-3xl font-bold text-brown-800">Settings</h1>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile</CardTitle>
+              <CardDescription>Your name and account details</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" value={email} disabled className="mt-1 opacity-60" />
+              </div>
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? "Saving..." : "Save Profile"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>Customize how the app looks and feels</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Dark Mode</Label>
+                  <p className="text-sm text-brown-500">Easier on the eyes at night</p>
+                </div>
+                <Switch
+                  checked={theme === "dark"}
+                  onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Large Text</Label>
+                  <p className="text-sm text-brown-500">Bigger, easier-to-read text</p>
+                </div>
+                <Switch
+                  checked={textSize === "large"}
+                  onCheckedChange={(checked) =>
+                    setTextSize(checked ? "large" : "normal")
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <Button variant="destructive" onClick={handleSignOut} className="w-full">
+                Sign Out
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </>
+  );
+}

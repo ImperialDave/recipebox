@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isGroupMember(groupId) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/groups/$(groupId)/members/$(request.auth.uid));
+    }
+
+    function groupRole(groupId) {
+      return get(/databases/$(database)/documents/groups/$(groupId)/members/$(request.auth.uid)).data.role;
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(userId);
+    }
+
+    match /groups/{groupId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && groupRole(groupId) == 'admin';
+
+      match /members/{memberId} {
+        allow read: if isSignedIn() && isGroupMember(groupId);
+        allow create: if isSignedIn() && (request.auth.uid == memberId || groupRole(groupId) == 'admin');
+        allow update, delete: if isSignedIn() && groupRole(groupId) == 'admin';
+      }
+    }
+
+    match /recipes/{recipeId} {
+      allow read: if isSignedIn() && (
+        resource.data.owner_id == request.auth.uid ||
+        (resource.data.status == 'published' && resource.data.is_private == false &&
+          resource.data.group_ids.hasAny(getUserGroupIds()))
+      );
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (
+        resource.data.owner_id == request.auth.uid ||
+        hasEditorRole(resource.data.group_ids)
+      );
+    }
+
+    function getUserGroupIds() {
+      return [];
+    }
+
+    function hasEditorRole(groupIds) {
+      return false;
+    }
+
+    match /comments/{commentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow delete: if isSignedIn() && resource.data.user_id == request.auth.uid;
+    }
+
+    match /favorites/{favId} {
+      allow read, write: if isSignedIn() && resource.data.user_id == request.auth.uid;
+      allow create: if isSignedIn();
+    }
+
+    match /mealPlans/{entryId} {
+      allow read, write: if isSignedIn() && resource.data.user_id == request.auth.uid;
+      allow create: if isSignedIn();
+    }
+
+    match /shoppingLists/{userId}/items/{itemId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}
