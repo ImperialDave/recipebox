@@ -11,6 +11,7 @@ import { AppHeader } from "@/components/layout/app-header";
 import { useTheme } from "@/components/providers/theme-provider";
 import { updateProfile } from "@/lib/actions/auth";
 import { signOutClient } from "@/lib/firebase/auth-client";
+import { BackupCard } from "@/components/settings/backup-card";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
@@ -112,6 +113,8 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+
+          <BackupCard />
 
           <Card>
             <CardContent className="pt-6">

@@ -29,6 +29,7 @@
     "@radix-ui/react-tabs": "^1.1.16",
     "@radix-ui/react-toast": "^1.2.18",
     "@radix-ui/react-tooltip": "^1.2.11",
+    "archiver": "^8.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/archiver": "^8.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
