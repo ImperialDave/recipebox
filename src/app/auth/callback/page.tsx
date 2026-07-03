@@ -11,8 +11,11 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     completeMagicLinkSignIn()
-      .then(() => {
-        router.push("/onboarding");
+      .then(async () => {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        const destination = data.redirect_to === "/onboarding" ? "/onboarding" : "/";
+        router.push(destination);
         router.refresh();
       })
       .catch((err) => {
