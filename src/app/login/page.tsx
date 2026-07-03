@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BookOpen, Mail, Lock } from "lucide-react";
+import { BookOpen, Mail, Lock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,7 +30,7 @@ export default function LoginPage() {
     try {
       await sendMagicLinkClient(email);
       setMagicSent(true);
-      toast.success("Check your email for the magic link!");
+      toast.success("Magic link sent — check your inbox and spam folder!");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to send link");
     } finally {
@@ -65,8 +65,16 @@ export default function LoginPage() {
               We sent a magic link to <strong>{email}</strong>. Click the link to sign in.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Button variant="outline" onClick={() => setMagicSent(false)}>
+          <CardContent className="space-y-4">
+            <div className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left text-sm text-amber-950">
+              <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
+              <p>
+                <strong>Can&apos;t find the email?</strong> Magic link messages often land in your{" "}
+                <strong>spam or junk folder</strong>. Check there if nothing arrives in your inbox
+                within a minute or two.
+              </p>
+            </div>
+            <Button variant="outline" onClick={() => setMagicSent(false)} className="w-full">
               Try a different email
             </Button>
           </CardContent>
