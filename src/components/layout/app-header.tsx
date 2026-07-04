@@ -28,7 +28,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
   const pathname = usePathname();
-  const { theme, setTheme, textSize, setTextSize } = useTheme();
+  const { resolvedTheme, setTheme, theme, textSize, setTextSize } = useTheme();
 
   const navItems = [
     { href: "/recipes", label: "Recipes", icon: BookOpen },
@@ -37,22 +37,28 @@ export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
     { href: "/meal-planner", label: "Planner", icon: Calendar },
   ];
 
+  const cycleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else if (theme === "dark") setTheme("system");
+    else setTheme("light");
+  };
+
   return (
-    <header className="sticky top-0 z-40 border-b border-cream-300 bg-cream-100/95 backdrop-blur-md no-print">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/80 backdrop-blur-xl no-print">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sage-600 text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-accent-fg">
               <BookOpen className="h-5 w-5" />
             </div>
-            <span className="hidden font-serif text-lg font-semibold text-brown-800 sm:block">
+            <span className="hidden font-serif text-lg font-semibold text-fg sm:block">
               {APP_NAME}
             </span>
           </Link>
 
           {onSearch && (
             <div className="relative flex-1 max-w-xl">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brown-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-muted" />
               <Input
                 placeholder="Search recipes, ingredients, tags..."
                 className="pl-10"
@@ -66,17 +72,25 @@ export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle dark mode"
+              onClick={cycleTheme}
+              aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {resolvedTheme === "dark" ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTextSize(textSize === "large" ? "normal" : "large")}
+              onClick={() =>
+                setTextSize(textSize === "large" ? "normal" : "large")
+              }
               aria-label="Toggle large text"
-              className={cn(textSize === "large" && "bg-sage-100")}
+              className={cn(
+                textSize === "large" && "bg-accent-subtle text-accent",
+              )}
             >
               <Type className="h-4 w-4" />
             </Button>

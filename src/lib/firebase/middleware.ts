@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME } from "./config";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback", "/join", "/onboarding"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/signup",
+  "/auth/callback",
+  "/join",
+  "/onboarding",
+];
 
 export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;

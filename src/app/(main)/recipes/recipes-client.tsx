@@ -32,8 +32,12 @@ export function RecipesPageClient({ initialRecipes }: RecipesPageClientProps) {
         const inTitle = r.title.toLowerCase().includes(q);
         const inDesc = r.description?.toLowerCase().includes(q);
         const inTags = r.tags.some((t) => t.toLowerCase().includes(q));
-        const inIngredients = r.ingredients?.some((i) => i.name.toLowerCase().includes(q));
-        const inInstructions = r.instructions?.some((i) => i.text.toLowerCase().includes(q));
+        const inIngredients = r.ingredients?.some((i) =>
+          i.name.toLowerCase().includes(q),
+        );
+        const inInstructions = r.instructions?.some((i) =>
+          i.text.toLowerCase().includes(q),
+        );
         return inTitle || inDesc || inTags || inIngredients || inInstructions;
       });
     }
@@ -43,7 +47,9 @@ export function RecipesPageClient({ initialRecipes }: RecipesPageClientProps) {
     }
 
     if (selectedTags.length > 0) {
-      result = result.filter((r) => selectedTags.some((t) => r.tags.includes(t)));
+      result = result.filter((r) =>
+        selectedTags.some((t) => r.tags.includes(t)),
+      );
     }
 
     if (timeRange !== "all") {
@@ -53,23 +59,32 @@ export function RecipesPageClient({ initialRecipes }: RecipesPageClientProps) {
           (r) =>
             r.total_time_minutes != null &&
             r.total_time_minutes >= range.min &&
-            r.total_time_minutes <= range.max
+            r.total_time_minutes <= range.max,
         );
       }
     }
 
     switch (sort) {
       case "oldest":
-        result.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        result.sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        );
         break;
       case "title":
         result.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "time":
-        result.sort((a, b) => (a.total_time_minutes || 999) - (b.total_time_minutes || 999));
+        result.sort(
+          (a, b) =>
+            (a.total_time_minutes || 999) - (b.total_time_minutes || 999),
+        );
         break;
       default:
-        result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        result.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
     }
 
     return result;
@@ -95,7 +110,9 @@ export function RecipesPageClient({ initialRecipes }: RecipesPageClientProps) {
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="font-serif text-3xl font-bold text-brown-800">All Recipes</h1>
+            <h1 className="font-serif text-3xl font-bold text-fg">
+              All Recipes
+            </h1>
             <div className="flex gap-2">
               {selectMode && selectedIds.size > 0 && (
                 <Button variant="outline" onClick={handlePrintSelected}>
@@ -133,10 +150,10 @@ export function RecipesPageClient({ initialRecipes }: RecipesPageClientProps) {
             {filteredRecipes.length === 0 ? (
               <div className="text-center py-16">
                 <div className="text-5xl mb-4">🔍</div>
-                <h2 className="font-serif text-xl font-semibold text-brown-800 mb-2">
+                <h2 className="font-serif text-xl font-semibold text-fg mb-2">
                   No recipes found
                 </h2>
-                <p className="text-brown-500">
+                <p className="text-fg-secondary">
                   Try adjusting your filters or search terms
                 </p>
               </div>

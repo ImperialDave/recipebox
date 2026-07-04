@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AppHeader } from "@/components/layout/app-header";
 import { createGroup } from "@/lib/actions/groups";
 import { toast } from "sonner";
@@ -26,7 +32,9 @@ export default function NewGroupPage() {
       toast.success("Group created with 10 sample recipes!");
       router.push(`/groups/${group.id}`);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create group");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create group",
+      );
       setLoading(false);
     }
   };
@@ -38,9 +46,12 @@ export default function NewGroupPage() {
         <div className="max-w-lg mx-auto">
           <Card>
             <CardHeader>
-              <CardTitle className="font-serif text-2xl">Create a Family Group</CardTitle>
+              <CardTitle className="font-serif text-2xl">
+                Create a Family Group
+              </CardTitle>
               <CardDescription>
-                We&apos;ll add 10 beloved family recipes so you can explore right away!
+                We&apos;ll add 10 beloved family recipes so you can explore
+                right away!
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -66,7 +77,12 @@ export default function NewGroupPage() {
                     className="mt-1"
                   />
                 </div>
-                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="lg"
+                  disabled={loading}
+                >
                   {loading ? "Creating..." : "Create Group"}
                 </Button>
               </form>

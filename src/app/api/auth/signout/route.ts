@@ -3,7 +3,10 @@ import { SESSION_COOKIE_NAME } from "@/lib/firebase/config";
 
 export async function GET() {
   const response = NextResponse.redirect(
-    new URL("/login", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+    new URL(
+      "/login",
+      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    ),
   );
   response.cookies.set(SESSION_COOKIE_NAME, "", {
     maxAge: 0,

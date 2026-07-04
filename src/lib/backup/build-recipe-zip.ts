@@ -12,7 +12,7 @@ export interface BackupOptions {
 
 export function buildRecipeZipStream(
   recipes: Recipe[],
-  options: BackupOptions
+  options: BackupOptions,
 ): ReadableStream<Uint8Array> {
   const passThrough = new PassThrough();
   const archive = new ZipArchive({ zlib: { level: 6 } });
@@ -23,7 +23,11 @@ export function buildRecipeZipStream(
   void (async () => {
     try {
       const filenames = buildRecipeFilenames(recipes);
-      const indexEntries: { title: string; filename: string; category: string }[] = [];
+      const indexEntries: {
+        title: string;
+        filename: string;
+        category: string;
+      }[] = [];
       const manifestRecipes: {
         id: string;
         title: string;
@@ -77,9 +81,9 @@ export function buildRecipeZipStream(
             recipes: manifestRecipes,
           },
           null,
-          2
+          2,
         ),
-        { name: "manifest.json" }
+        { name: "manifest.json" },
       );
 
       await archive.finalize();

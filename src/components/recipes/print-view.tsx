@@ -12,7 +12,11 @@ interface PrintViewProps {
   includePhoto?: boolean;
 }
 
-export function PrintView({ recipe, groupName, includePhoto = true }: PrintViewProps) {
+export function PrintView({
+  recipe,
+  groupName,
+  includePhoto = true,
+}: PrintViewProps) {
   const printedDate = format(new Date(), "MMMM d, yyyy");
 
   return (
@@ -27,19 +31,29 @@ export function PrintView({ recipe, groupName, includePhoto = true }: PrintViewP
 
       <h1 className="font-serif text-3xl font-bold mb-4">{recipe.title}</h1>
 
-      {(recipe.prep_time_minutes || recipe.cook_time_minutes || recipe.servings) && (
+      {(recipe.prep_time_minutes ||
+        recipe.cook_time_minutes ||
+        recipe.servings) && (
         <div className="flex gap-6 mb-6 text-sm">
           {recipe.prep_time_minutes && (
-            <span><strong>Prep:</strong> {formatMinutes(recipe.prep_time_minutes)}</span>
+            <span>
+              <strong>Prep:</strong> {formatMinutes(recipe.prep_time_minutes)}
+            </span>
           )}
           {recipe.cook_time_minutes && (
-            <span><strong>Cook:</strong> {formatMinutes(recipe.cook_time_minutes)}</span>
+            <span>
+              <strong>Cook:</strong> {formatMinutes(recipe.cook_time_minutes)}
+            </span>
           )}
           {recipe.total_time_minutes && (
-            <span><strong>Total:</strong> {formatMinutes(recipe.total_time_minutes)}</span>
+            <span>
+              <strong>Total:</strong> {formatMinutes(recipe.total_time_minutes)}
+            </span>
           )}
           {recipe.servings && (
-            <span><strong>Servings:</strong> {recipe.servings}</span>
+            <span>
+              <strong>Servings:</strong> {recipe.servings}
+            </span>
           )}
         </div>
       )}

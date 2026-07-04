@@ -7,14 +7,20 @@ export async function getUserGroupIds(userId: string): Promise<string[]> {
   const groupIds: string[] = [];
 
   for (const groupDoc of groupsSnap.docs) {
-    const memberDoc = await groupDoc.ref.collection("members").doc(userId).get();
+    const memberDoc = await groupDoc.ref
+      .collection("members")
+      .doc(userId)
+      .get();
     if (memberDoc.exists) groupIds.push(groupDoc.id);
   }
 
   return groupIds;
 }
 
-export async function getGroupRole(groupId: string, userId: string): Promise<GroupRole | null> {
+export async function getGroupRole(
+  groupId: string,
+  userId: string,
+): Promise<GroupRole | null> {
   const doc = await getAdminDb()
     .collection("groups")
     .doc(groupId)
@@ -26,14 +32,17 @@ export async function getGroupRole(groupId: string, userId: string): Promise<Gro
   return doc.data()?.role as GroupRole;
 }
 
-export async function isGroupMember(groupId: string, userId: string): Promise<boolean> {
+export async function isGroupMember(
+  groupId: string,
+  userId: string,
+): Promise<boolean> {
   const role = await getGroupRole(groupId, userId);
   return role !== null;
 }
 
 export async function canViewRecipe(
   recipeId: string,
-  userId: string
+  userId: string,
 ): Promise<boolean> {
   const db = getAdminDb();
   const recipeDoc = await db.collection("recipes").doc(recipeId).get();
@@ -52,7 +61,10 @@ export async function canViewRecipe(
   return false;
 }
 
-export async function canEditRecipe(recipeId: string, userId: string): Promise<boolean> {
+export async function canEditRecipe(
+  recipeId: string,
+  userId: string,
+): Promise<boolean> {
   const db = getAdminDb();
   const recipeDoc = await db.collection("recipes").doc(recipeId).get();
   if (!recipeDoc.exists) return false;
@@ -69,7 +81,10 @@ export async function canEditRecipe(recipeId: string, userId: string): Promise<b
   return false;
 }
 
-export async function canDeleteRecipe(recipeId: string, userId: string): Promise<boolean> {
+export async function canDeleteRecipe(
+  recipeId: string,
+  userId: string,
+): Promise<boolean> {
   const db = getAdminDb();
   const recipeDoc = await db.collection("recipes").doc(recipeId).get();
   if (!recipeDoc.exists) return false;

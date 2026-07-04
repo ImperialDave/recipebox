@@ -41,15 +41,22 @@ function sortItems(items: ShoppingListItem[]) {
 }
 
 function groupItems(items: ShoppingListItem[]) {
-  const grouped = items.reduce<Record<string, ShoppingListItem[]>>((acc, item) => {
-    const cat = item.category || "Other";
-    (acc[cat] ??= []).push(item);
-    return acc;
-  }, {});
+  const grouped = items.reduce<Record<string, ShoppingListItem[]>>(
+    (acc, item) => {
+      const cat = item.category || "Other";
+      (acc[cat] ??= []).push(item);
+      return acc;
+    },
+    {},
+  );
 
   return Object.entries(grouped).sort(([a], [b]) => {
-    const aIndex = SHOPPING_CATEGORIES.indexOf(a as (typeof SHOPPING_CATEGORIES)[number]);
-    const bIndex = SHOPPING_CATEGORIES.indexOf(b as (typeof SHOPPING_CATEGORIES)[number]);
+    const aIndex = SHOPPING_CATEGORIES.indexOf(
+      a as (typeof SHOPPING_CATEGORIES)[number],
+    );
+    const bIndex = SHOPPING_CATEGORIES.indexOf(
+      b as (typeof SHOPPING_CATEGORIES)[number],
+    );
     if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
     if (aIndex === -1) return 1;
     if (bIndex === -1) return -1;
@@ -140,15 +147,21 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="font-serif text-3xl font-bold text-brown-800">Shopping List</h1>
-              <p className="text-brown-500 mt-1">
+              <h1 className="font-serif text-3xl font-bold text-fg">
+                Shopping List
+              </h1>
+              <p className="text-fg-secondary mt-1">
                 {items.length === 0
                   ? "Nothing on your list yet"
                   : `${uncheckedCount} to buy${checkedCount > 0 ? `, ${checkedCount} in cart` : ""}`}
               </p>
             </div>
             {checkedCount > 0 && (
-              <Button variant="outline" onClick={handleClearChecked} className="shrink-0">
+              <Button
+                variant="outline"
+                onClick={handleClearChecked}
+                className="shrink-0"
+              >
                 <CheckCheck className="h-4 w-4 mr-1" />
                 Clear checked
               </Button>
@@ -206,7 +219,11 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
                     </Select>
                   </div>
                 </div>
-                <Button type="submit" disabled={adding || !name.trim()} className="w-full sm:w-auto">
+                <Button
+                  type="submit"
+                  disabled={adding || !name.trim()}
+                  className="w-full sm:w-auto"
+                >
                   <Plus className="h-4 w-4 mr-1" />
                   {adding ? "Adding..." : "Add to list"}
                 </Button>
@@ -217,12 +234,12 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
           {items.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🛒</div>
-              <h2 className="font-serif text-2xl font-semibold text-brown-800 mb-2">
+              <h2 className="font-serif text-2xl font-semibold text-fg mb-2">
                 Your list is empty
               </h2>
-              <p className="text-brown-500 mb-6 max-w-sm mx-auto">
-                Add items above, pull ingredients from a recipe, or generate a list from your meal
-                planner.
+              <p className="text-fg-secondary mb-6 max-w-sm mx-auto">
+                Add items above, pull ingredients from a recipe, or generate a
+                list from your meal planner.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/recipes">
@@ -243,9 +260,9 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
             <div className="space-y-6">
               {grouped.map(([cat, categoryItems]) => (
                 <section key={cat}>
-                  <h2 className="font-serif text-lg font-semibold text-brown-700 mb-3">
+                  <h2 className="font-serif text-lg font-semibold text-fg-secondary mb-3">
                     {cat}
-                    <span className="ml-2 text-sm font-normal text-brown-400">
+                    <span className="ml-2 text-sm font-normal text-fg-muted">
                       ({categoryItems.filter((i) => !i.checked).length})
                     </span>
                   </h2>
@@ -256,8 +273,8 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
                         className={cn(
                           "flex items-center gap-3 p-3 rounded-xl border transition-colors",
                           item.checked
-                            ? "bg-cream-200/50 border-cream-300 opacity-75"
-                            : "bg-cream-50 border-cream-300"
+                            ? "bg-overlay/50 border-border opacity-75"
+                            : "bg-elevated border-border",
                         )}
                       >
                         <Checkbox
@@ -271,8 +288,8 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
                         />
                         <span
                           className={cn(
-                            "flex-1 text-base sm:text-lg text-brown-800",
-                            item.checked && "line-through text-brown-400"
+                            "flex-1 text-base sm:text-lg text-fg",
+                            item.checked && "line-through text-fg-muted",
                           )}
                         >
                           {(item.quantity || item.unit) && (
@@ -288,7 +305,7 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
                         <button
                           type="button"
                           onClick={() => handleDelete(item.id)}
-                          className="text-brown-400 hover:text-red-500 dark:hover:text-red-400 p-1 rounded-lg hover:bg-cream-200 transition-colors"
+                          className="text-fg-muted hover:text-destructive p-1 rounded-lg hover:bg-overlay transition-colors"
                           aria-label={`Remove ${item.ingredient_name}`}
                         >
                           <Trash2 className="h-4 w-4" />

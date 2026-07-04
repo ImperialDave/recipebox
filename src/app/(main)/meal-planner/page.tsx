@@ -7,7 +7,10 @@ export default async function MealPlannerPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const weekStart = format(startOfWeek(new Date(), { weekStartsOn: 0 }), "yyyy-MM-dd");
+  const weekStart = format(
+    startOfWeek(new Date(), { weekStartsOn: 0 }),
+    "yyyy-MM-dd",
+  );
   const [recipes, mealPlan] = await Promise.all([
     getRecipes({ sort: "title" }),
     getMealPlan(weekStart),

@@ -61,7 +61,7 @@ function escapeHtml(text: string): string {
 
 export function renderRecipeHtml(
   recipe: Recipe,
-  options?: { groupName?: string; imagePath?: string }
+  options?: { groupName?: string; imagePath?: string },
 ): string {
   const printedDate = format(new Date(), "MMMM d, yyyy");
   const groupName = options?.groupName;
@@ -69,16 +69,24 @@ export function renderRecipeHtml(
 
   const metaParts: string[] = [];
   if (recipe.prep_time_minutes) {
-    metaParts.push(`<span><strong>Prep:</strong> ${escapeHtml(formatMinutes(recipe.prep_time_minutes))}</span>`);
+    metaParts.push(
+      `<span><strong>Prep:</strong> ${escapeHtml(formatMinutes(recipe.prep_time_minutes))}</span>`,
+    );
   }
   if (recipe.cook_time_minutes) {
-    metaParts.push(`<span><strong>Cook:</strong> ${escapeHtml(formatMinutes(recipe.cook_time_minutes))}</span>`);
+    metaParts.push(
+      `<span><strong>Cook:</strong> ${escapeHtml(formatMinutes(recipe.cook_time_minutes))}</span>`,
+    );
   }
   if (recipe.total_time_minutes) {
-    metaParts.push(`<span><strong>Total:</strong> ${escapeHtml(formatMinutes(recipe.total_time_minutes))}</span>`);
+    metaParts.push(
+      `<span><strong>Total:</strong> ${escapeHtml(formatMinutes(recipe.total_time_minutes))}</span>`,
+    );
   }
   if (recipe.servings) {
-    metaParts.push(`<span><strong>Servings:</strong> ${recipe.servings}</span>`);
+    metaParts.push(
+      `<span><strong>Servings:</strong> ${recipe.servings}</span>`,
+    );
   }
 
   const ingredients = (recipe.ingredients || [])
@@ -158,10 +166,11 @@ export function renderRecipeHtml(
 }
 
 export function renderIndexHtml(
-  recipes: { title: string; filename: string; category: string }[]
+  recipes: { title: string; filename: string; category: string }[],
 ): string {
-  const sorted = [...recipes].sort((a, b) =>
-    a.category.localeCompare(b.category) || a.title.localeCompare(b.title)
+  const sorted = [...recipes].sort(
+    (a, b) =>
+      a.category.localeCompare(b.category) || a.title.localeCompare(b.title),
   );
 
   const byCategory = sorted.reduce<Record<string, typeof sorted>>((acc, r) => {
@@ -174,7 +183,7 @@ export function renderIndexHtml(
       const links = items
         .map(
           (r) =>
-            `<li><a href="recipes/${escapeHtml(r.filename)}.html">${escapeHtml(r.title)}</a></li>`
+            `<li><a href="recipes/${escapeHtml(r.filename)}.html">${escapeHtml(r.title)}</a></li>`,
         )
         .join("\n");
       return `<section><h2>${escapeHtml(category)}</h2><ul>${links}</ul></section>`;

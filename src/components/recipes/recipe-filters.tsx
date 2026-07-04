@@ -1,6 +1,10 @@
 "use client";
 
-import { DEFAULT_CATEGORIES, SUGGESTED_TAGS, TIME_RANGES } from "@/lib/constants";
+import {
+  DEFAULT_CATEGORIES,
+  SUGGESTED_TAGS,
+  TIME_RANGES,
+} from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -139,7 +143,7 @@ export function RecipeFilters({
             onTagsChange([]);
             onTimeRangeChange("all");
           }}
-          className="text-brown-500"
+          className="text-fg-secondary"
         >
           <X className="h-4 w-4 mr-1" />
           Clear filters

@@ -7,10 +7,17 @@ import { requireSessionUser } from "@/lib/firebase/auth-server";
 import { getGroupRole } from "@/lib/firebase/permissions";
 import { generateInviteCode } from "@/lib/utils";
 import { SEED_RECIPES } from "@/lib/seed-recipes";
-import { prepareIngredients, prepareInstructions } from "@/lib/firebase/helpers";
+import {
+  prepareIngredients,
+  prepareInstructions,
+} from "@/lib/firebase/helpers";
 import type { GroupRole } from "@/lib/constants";
 
-export async function createGroup(name: string, description?: string, coverUrl?: string) {
+export async function createGroup(
+  name: string,
+  description?: string,
+  coverUrl?: string,
+) {
   const user = await requireSessionUser();
   const db = getAdminDb();
   const now = new Date();
@@ -64,7 +71,12 @@ export async function createGroup(name: string, description?: string, coverUrl?:
   revalidatePath("/recipes");
   revalidatePath("/");
 
-  return { id: groupRef.id, ...groupData, created_at: now.toISOString(), updated_at: now.toISOString() };
+  return {
+    id: groupRef.id,
+    ...groupData,
+    created_at: now.toISOString(),
+    updated_at: now.toISOString(),
+  };
 }
 
 export async function joinGroup(inviteCode: string) {
@@ -97,7 +109,11 @@ export async function joinGroup(inviteCode: string) {
   return { groupId: groupDoc.id, alreadyMember: false };
 }
 
-export async function updateMemberRole(groupId: string, memberId: string, role: GroupRole) {
+export async function updateMemberRole(
+  groupId: string,
+  memberId: string,
+  role: GroupRole,
+) {
   const user = await requireSessionUser();
   if ((await getGroupRole(groupId, user.uid)) !== "admin") {
     throw new Error("Not authorized");
@@ -144,7 +160,7 @@ export async function leaveGroup(groupId: string) {
 
 export async function updateGroup(
   groupId: string,
-  data: { name?: string; description?: string; cover_url?: string }
+  data: { name?: string; description?: string; cover_url?: string },
 ) {
   const user = await requireSessionUser();
   if ((await getGroupRole(groupId, user.uid)) !== "admin") {
@@ -166,7 +182,11 @@ export async function deleteGroup(groupId: string) {
   }
 
   const db = getAdminDb();
-  const members = await db.collection("groups").doc(groupId).collection("members").get();
+  const members = await db
+    .collection("groups")
+    .doc(groupId)
+    .collection("members")
+    .get();
   const batch = db.batch();
   members.docs.forEach((doc) => batch.delete(doc.ref));
   batch.delete(db.collection("groups").doc(groupId));

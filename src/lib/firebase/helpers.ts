@@ -2,14 +2,19 @@ import type { Timestamp } from "firebase-admin/firestore";
 import type { Recipe, Ingredient, Instruction } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 
-export function toISOString(value: Timestamp | Date | string | undefined): string {
+export function toISOString(
+  value: Timestamp | Date | string | undefined,
+): string {
   if (!value) return new Date().toISOString();
   if (typeof value === "string") return value;
   if (value instanceof Date) return value.toISOString();
   return value.toDate().toISOString();
 }
 
-export function mapRecipeDoc(id: string, data: FirebaseFirestore.DocumentData): Recipe {
+export function mapRecipeDoc(
+  id: string,
+  data: FirebaseFirestore.DocumentData,
+): Recipe {
   const ingredients: Ingredient[] = (data.ingredients || []).map(
     (ing: Omit<Ingredient, "id"> & { id?: string }, i: number) => ({
       id: ing.id || `ing-${i}`,
@@ -18,7 +23,7 @@ export function mapRecipeDoc(id: string, data: FirebaseFirestore.DocumentData): 
       name: ing.name || "",
       prep_note: ing.prep_note || "",
       sort_order: ing.sort_order ?? i,
-    })
+    }),
   );
 
   const instructions: Instruction[] = (data.instructions || []).map(
@@ -27,7 +32,7 @@ export function mapRecipeDoc(id: string, data: FirebaseFirestore.DocumentData): 
       text: inst.text || "",
       timer_minutes: inst.timer_minutes ?? null,
       sort_order: inst.sort_order ?? i,
-    })
+    }),
   );
 
   return {
@@ -52,13 +57,27 @@ export function mapRecipeDoc(id: string, data: FirebaseFirestore.DocumentData): 
     instructions: instructions.sort((a, b) => a.sort_order - b.sort_order),
     group_ids: data.group_ids || [],
     owner: data.owner_name
-      ? { id: data.owner_id, full_name: data.owner_name, avatar_url: data.owner_avatar || null, email: "", onboarding_complete: true, created_at: "", updated_at: "" }
+      ? {
+          id: data.owner_id,
+          full_name: data.owner_name,
+          avatar_url: data.owner_avatar || null,
+          email: "",
+          onboarding_complete: true,
+          created_at: "",
+          updated_at: "",
+        }
       : undefined,
   };
 }
 
 export function prepareIngredients(
-  ingredients: { quantity: string; unit: string; name: string; prep_note: string; sort_order: number }[]
+  ingredients: {
+    quantity: string;
+    unit: string;
+    name: string;
+    prep_note: string;
+    sort_order: number;
+  }[],
 ) {
   return ingredients.map((ing, i) => ({
     id: uuidv4(),
@@ -71,7 +90,11 @@ export function prepareIngredients(
 }
 
 export function prepareInstructions(
-  instructions: { text: string; timer_minutes: number | null; sort_order: number }[]
+  instructions: {
+    text: string;
+    timer_minutes: number | null;
+    sort_order: number;
+  }[],
 ) {
   return instructions.map((inst, i) => ({
     id: uuidv4(),

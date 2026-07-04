@@ -48,10 +48,16 @@ interface RecipeDetailClientProps {
   userId: string;
 }
 
-export function RecipeDetailClient({ recipe, comments: initialComments, userId }: RecipeDetailClientProps) {
+export function RecipeDetailClient({
+  recipe,
+  comments: initialComments,
+  userId,
+}: RecipeDetailClientProps) {
   const router = useRouter();
   const [cookingMode, setCookingMode] = useState(false);
-  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
+  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
+    new Set(),
+  );
   const [favorited, setFavorited] = useState(recipe.is_favorited);
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
@@ -67,7 +73,9 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
     try {
       const result = await toggleFavorite(recipe.id);
       setFavorited(result.favorited);
-      toast.success(result.favorited ? "Added to favorites" : "Removed from favorites");
+      toast.success(
+        result.favorited ? "Added to favorites" : "Removed from favorites",
+      );
     } catch {
       toast.error("Could not update favorite");
     }
@@ -106,7 +114,8 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
   };
 
   const handleAddMissingToShoppingList = async () => {
-    const unchecked = recipe.ingredients?.filter((i) => !checkedIngredients.has(i.id)) || [];
+    const unchecked =
+      recipe.ingredients?.filter((i) => !checkedIngredients.has(i.id)) || [];
     if (unchecked.length === 0) {
       toast.info("All ingredients are checked off!");
       return;
@@ -117,7 +126,7 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
           ingredient_name: i.name,
           quantity: i.quantity,
           unit: i.unit,
-        }))
+        })),
       );
       toast.success(`Added ${unchecked.length} items to shopping list`);
     } catch {
@@ -137,11 +146,17 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
     const scaled = num * scaleFactor;
     if (scaled === Math.floor(scaled)) return scaled.toString();
     const fractions: Record<string, string> = {
-      "0.25": "¼", "0.33": "⅓", "0.5": "½", "0.67": "⅔", "0.75": "¾",
+      "0.25": "¼",
+      "0.33": "⅓",
+      "0.5": "½",
+      "0.67": "⅔",
+      "0.75": "¾",
     };
     const whole = Math.floor(scaled);
     const frac = scaled - whole;
-    const fracStr = Object.entries(fractions).find(([k]) => Math.abs(parseFloat(k) - frac) < 0.05)?.[1];
+    const fracStr = Object.entries(fractions).find(
+      ([k]) => Math.abs(parseFloat(k) - frac) < 0.05,
+    )?.[1];
     if (whole && fracStr) return `${whole} ${fracStr}`;
     if (fracStr) return fracStr;
     return scaled.toFixed(1);
@@ -163,17 +178,26 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
 
       <div className="no-print">
         <div className="relative">
-          <div className="relative h-64 sm:h-80 lg:h-96 bg-cream-200">
+          <div className="relative h-64 sm:h-80 lg:h-96 bg-overlay">
             {recipe.hero_url ? (
-              <Image src={recipe.hero_url} alt={recipe.title} fill className="object-cover" priority />
+              <Image
+                src={recipe.hero_url}
+                alt={recipe.title}
+                fill
+                className="object-cover"
+                priority
+              />
             ) : (
-              <div className="flex h-full items-center justify-center text-8xl bg-gradient-to-br from-cream-200 to-cream-300">
+              <div className="flex h-full items-center justify-center text-8xl bg-gradient-to-br from-overlay to-border">
                 🍽️
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-brown-900/70 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-              <Link href="/recipes" className="inline-flex items-center text-white/80 hover:text-white mb-3 text-sm">
+              <Link
+                href="/recipes"
+                className="inline-flex items-center text-white/80 hover:text-white mb-3 text-sm"
+              >
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back to recipes
               </Link>
               <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white">
@@ -193,15 +217,13 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
                     {recipe.servings} servings
                   </span>
                 )}
-                {recipe.difficulty && (
-                  <span>{recipe.difficulty}</span>
-                )}
+                {recipe.difficulty && <span>{recipe.difficulty}</span>}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="sticky top-0 z-30 bg-cream-100/95 backdrop-blur border-b border-cream-300 px-4 py-3">
+        <div className="sticky top-0 z-30 bg-page/95 backdrop-blur border-b border-border px-4 py-3">
           <div className="max-w-4xl mx-auto flex flex-wrap gap-2">
             <Button size="lg" onClick={() => setCookingMode(true)}>
               <ChefHat className="h-5 w-5 mr-2" />
@@ -212,7 +234,12 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
               Print
             </Button>
             <Button variant="outline" onClick={handleFavorite}>
-              <Star className={cn("h-4 w-4 mr-1", favorited && "fill-terracotta-500 text-terracotta-500")} />
+              <Star
+                className={cn(
+                  "h-4 w-4 mr-1",
+                  favorited && "fill-warm text-warm",
+                )}
+              />
               {favorited ? "Saved" : "Save"}
             </Button>
             <Button variant="outline" onClick={handleDuplicate}>
@@ -228,7 +255,11 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
               </Link>
             )}
             {isOwner && (
-              <Button variant="outline" onClick={() => setDeleteDialog(true)} className="text-red-600 dark:text-red-400">
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialog(true)}
+                className="text-destructive "
+              >
                 <Trash2 className="h-4 w-4 mr-1" />
                 Delete
               </Button>
@@ -239,8 +270,10 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
         <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-10">
           {recipe.description && (
             <section>
-              <h2 className="font-serif text-2xl font-semibold text-brown-800 mb-3">Family Story</h2>
-              <p className="text-brown-600 leading-relaxed text-lg whitespace-pre-wrap">
+              <h2 className="font-serif text-2xl font-semibold text-fg mb-3">
+                Family Story
+              </h2>
+              <p className="text-fg-secondary leading-relaxed text-lg whitespace-pre-wrap">
                 {recipe.description}
               </p>
             </section>
@@ -248,11 +281,13 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
 
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-serif text-2xl font-semibold text-brown-800">Ingredients</h2>
+              <h2 className="font-serif text-2xl font-semibold text-fg">
+                Ingredients
+              </h2>
               <div className="flex items-center gap-3">
                 {recipe.servings && (
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-brown-500">Scale:</span>
+                    <span className="text-fg-secondary">Scale:</span>
                     {[0.5, 1, 1.5, 2, 3].map((factor) => (
                       <Button
                         key={factor}
@@ -282,35 +317,52 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
                     }}
                     className="mt-1"
                   />
-                  <span className={cn(
-                    "text-lg leading-relaxed",
-                    checkedIngredients.has(ing.id) && "line-through text-brown-400"
-                  )}>
-                    {scaledQuantity(ing.quantity) && `${scaledQuantity(ing.quantity)} `}
+                  <span
+                    className={cn(
+                      "text-lg leading-relaxed",
+                      checkedIngredients.has(ing.id) &&
+                        "line-through text-fg-muted",
+                    )}
+                  >
+                    {scaledQuantity(ing.quantity) &&
+                      `${scaledQuantity(ing.quantity)} `}
                     {ing.unit && `${ing.unit} `}
                     <strong>{ing.name}</strong>
-                    {ing.prep_note && <span className="text-brown-500">, {ing.prep_note}</span>}
+                    {ing.prep_note && (
+                      <span className="text-fg-secondary">
+                        , {ing.prep_note}
+                      </span>
+                    )}
                   </span>
                 </li>
               ))}
             </ul>
-            <Button variant="outline" size="sm" className="mt-4" onClick={handleAddMissingToShoppingList}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={handleAddMissingToShoppingList}
+            >
               Add unchecked to shopping list
             </Button>
           </section>
 
           <section>
-            <h2 className="font-serif text-2xl font-semibold text-brown-800 mb-4">Instructions</h2>
+            <h2 className="font-serif text-2xl font-semibold text-fg mb-4">
+              Instructions
+            </h2>
             <ol className="space-y-6">
               {recipe.instructions?.map((inst, i) => (
                 <li key={inst.id} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage-100 text-sage-700 font-bold">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent font-bold">
                     {i + 1}
                   </div>
                   <div className="flex-1 pt-1">
-                    <p className="text-lg leading-relaxed text-brown-700">{inst.text}</p>
+                    <p className="text-lg leading-relaxed text-fg-secondary">
+                      {inst.text}
+                    </p>
                     {inst.timer_minutes && (
-                      <span className="inline-flex items-center gap-1 mt-2 text-sm text-brown-500">
+                      <span className="inline-flex items-center gap-1 mt-2 text-sm text-fg-secondary">
                         <Clock className="h-3.5 w-3.5" />
                         {inst.timer_minutes} min
                       </span>
@@ -323,11 +375,19 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
 
           {recipe.tags.length > 0 && (
             <section>
-              <h2 className="font-serif text-xl font-semibold text-brown-800 mb-3">Tags</h2>
+              <h2 className="font-serif text-xl font-semibold text-fg mb-3">
+                Tags
+              </h2>
               <div className="flex flex-wrap gap-2">
                 {recipe.tags.map((tag) => (
-                  <Link key={tag} href={`/recipes?tag=${encodeURIComponent(tag)}`}>
-                    <Badge variant="outline" className="cursor-pointer hover:bg-cream-200">
+                  <Link
+                    key={tag}
+                    href={`/recipes?tag=${encodeURIComponent(tag)}`}
+                  >
+                    <Badge
+                      variant="outline"
+                      className="cursor-pointer hover:bg-overlay"
+                    >
                       {tag}
                     </Badge>
                   </Link>
@@ -337,25 +397,30 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
           )}
 
           <section>
-            <h2 className="font-serif text-2xl font-semibold text-brown-800 mb-4 flex items-center gap-2">
+            <h2 className="font-serif text-2xl font-semibold text-fg mb-4 flex items-center gap-2">
               <MessageCircle className="h-6 w-6" />
               Family Notes ({comments.length})
             </h2>
             <div className="space-y-4 mb-6">
               {comments.map((comment) => (
-                <div key={comment.id} className="flex gap-3 p-4 rounded-xl bg-cream-50 border border-cream-300">
+                <div
+                  key={comment.id}
+                  className="flex gap-3 p-4 rounded-xl bg-elevated border border-border"
+                >
                   <Avatar>
-                    <AvatarImage src={comment.profile?.avatar_url || undefined} />
+                    <AvatarImage
+                      src={comment.profile?.avatar_url || undefined}
+                    />
                     <AvatarFallback>
                       {comment.profile?.full_name?.[0] || "?"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <div className="font-medium text-brown-800">
+                    <div className="font-medium text-fg">
                       {comment.profile?.full_name || "Family Member"}
                     </div>
-                    <p className="text-brown-600 mt-1">{comment.content}</p>
-                    <time className="text-xs text-brown-400 mt-1 block">
+                    <p className="text-fg-secondary mt-1">{comment.content}</p>
+                    <time className="text-xs text-fg-muted mt-1 block">
                       {new Date(comment.created_at).toLocaleDateString()}
                     </time>
                   </div>
@@ -381,12 +446,17 @@ export function RecipeDetailClient({ recipe, comments: initialComments, userId }
             <DialogHeader>
               <DialogTitle>Delete this recipe?</DialogTitle>
               <DialogDescription>
-                &quot;{recipe.title}&quot; will be permanently removed. This cannot be undone.
+                &quot;{recipe.title}&quot; will be permanently removed. This
+                cannot be undone.
               </DialogDescription>
             </DialogHeader>
             <div className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={() => setDeleteDialog(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDelete}>Delete Recipe</Button>
+              <Button variant="outline" onClick={() => setDeleteDialog(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete Recipe
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

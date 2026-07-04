@@ -47,12 +47,18 @@ export async function getCurrentProfile(): Promise<Profile | null> {
     full_name: data.full_name || null,
     avatar_url: data.avatar_url || null,
     onboarding_complete: data.onboarding_complete ?? false,
-    created_at: data.created_at?.toDate?.()?.toISOString() || new Date().toISOString(),
-    updated_at: data.updated_at?.toDate?.()?.toISOString() || new Date().toISOString(),
+    created_at:
+      data.created_at?.toDate?.()?.toISOString() || new Date().toISOString(),
+    updated_at:
+      data.updated_at?.toDate?.()?.toISOString() || new Date().toISOString(),
   };
 }
 
-export async function ensureUserProfile(uid: string, email: string, fullName?: string) {
+export async function ensureUserProfile(
+  uid: string,
+  email: string,
+  fullName?: string,
+) {
   const db = getAdminDb();
   const ref = db.collection("users").doc(uid);
   const doc = await ref.get();

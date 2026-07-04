@@ -22,8 +22,17 @@ import {
 } from "@/components/ui/dialog";
 import { AppHeader } from "@/components/layout/app-header";
 import { RecipeCard } from "@/components/recipes/recipe-card";
-import { updateMemberRole, removeMember, leaveGroup, deleteGroup } from "@/lib/actions/groups";
-import { ROLE_LABELS, ROLE_DESCRIPTIONS, type GroupRole } from "@/lib/constants";
+import {
+  updateMemberRole,
+  removeMember,
+  leaveGroup,
+  deleteGroup,
+} from "@/lib/actions/groups";
+import {
+  ROLE_LABELS,
+  ROLE_DESCRIPTIONS,
+  type GroupRole,
+} from "@/lib/constants";
 import type { FamilyGroup, GroupMember, Recipe } from "@/lib/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -48,9 +57,10 @@ export function GroupDetailClient({
   const [deleteDialog, setDeleteDialog] = useState(false);
   const isAdmin = currentUserRole === "admin";
 
-  const inviteUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/join/${group.invite_code}`
-    : `/join/${group.invite_code}`;
+  const inviteUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/join/${group.invite_code}`
+      : `/join/${group.invite_code}`;
 
   const copyInvite = async () => {
     await navigator.clipboard.writeText(inviteUrl);
@@ -105,9 +115,13 @@ export function GroupDetailClient({
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
-            <h1 className="font-serif text-3xl font-bold text-brown-800">{group.name}</h1>
+            <h1 className="font-serif text-3xl font-bold text-fg">
+              {group.name}
+            </h1>
             {group.description && (
-              <p className="text-brown-500 mt-2 text-lg">{group.description}</p>
+              <p className="text-fg-secondary mt-2 text-lg">
+                {group.description}
+              </p>
             )}
           </div>
 
@@ -120,22 +134,27 @@ export function GroupDetailClient({
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3 flex-wrap">
-                <code className="px-4 py-2 bg-cream-200 rounded-xl font-mono text-lg tracking-widest">
+                <code className="px-4 py-2 bg-overlay rounded-xl font-mono text-lg tracking-widest">
                   {group.invite_code}
                 </code>
                 <Button onClick={copyInvite} variant="outline">
-                  {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
+                  {copied ? (
+                    <Check className="h-4 w-4 mr-1" />
+                  ) : (
+                    <Copy className="h-4 w-4 mr-1" />
+                  )}
                   {copied ? "Copied!" : "Copy Invite Link"}
                 </Button>
               </div>
-              <p className="text-sm text-brown-500 mt-3">
-                Share this code or link with family members so they can join your group.
+              <p className="text-sm text-fg-secondary mt-3">
+                Share this code or link with family members so they can join
+                your group.
               </p>
             </CardContent>
           </Card>
 
           <section className="mb-10">
-            <h2 className="font-serif text-2xl font-semibold text-brown-800 mb-4 flex items-center gap-2">
+            <h2 className="font-serif text-2xl font-semibold text-fg mb-4 flex items-center gap-2">
               <Users className="h-6 w-6" />
               Members ({members.length})
             </h2>
@@ -143,17 +162,23 @@ export function GroupDetailClient({
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-cream-50 border border-cream-300"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-elevated border border-border"
                 >
                   <Avatar>
-                    <AvatarImage src={member.profile?.avatar_url || undefined} />
-                    <AvatarFallback>{member.profile?.full_name?.[0] || "?"}</AvatarFallback>
+                    <AvatarImage
+                      src={member.profile?.avatar_url || undefined}
+                    />
+                    <AvatarFallback>
+                      {member.profile?.full_name?.[0] || "?"}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-brown-800">
-                      {member.profile?.full_name || member.profile?.email || "Member"}
+                    <div className="font-medium text-fg">
+                      {member.profile?.full_name ||
+                        member.profile?.email ||
+                        "Member"}
                     </div>
-                    <div className="text-sm text-brown-500">
+                    <div className="text-sm text-fg-secondary">
                       {ROLE_DESCRIPTIONS[member.role as GroupRole]}
                     </div>
                   </div>
@@ -161,7 +186,9 @@ export function GroupDetailClient({
                     <div className="flex items-center gap-2">
                       <Select
                         value={member.role}
-                        onValueChange={(v) => handleRoleChange(member.id, v as GroupRole)}
+                        onValueChange={(v) =>
+                          handleRoleChange(member.id, v as GroupRole)
+                        }
                       >
                         <SelectTrigger className="w-28">
                           <SelectValue />
@@ -177,11 +204,13 @@ export function GroupDetailClient({
                         size="icon"
                         onClick={() => handleRemoveMember(member.id)}
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
                   ) : (
-                    <Badge variant="outline">{ROLE_LABELS[member.role as GroupRole]}</Badge>
+                    <Badge variant="outline">
+                      {ROLE_LABELS[member.role as GroupRole]}
+                    </Badge>
                   )}
                 </div>
               ))}
@@ -189,11 +218,13 @@ export function GroupDetailClient({
           </section>
 
           <section className="mb-10">
-            <h2 className="font-serif text-2xl font-semibold text-brown-800 mb-4">
+            <h2 className="font-serif text-2xl font-semibold text-fg mb-4">
               Shared Recipes ({recipes.length})
             </h2>
             {recipes.length === 0 ? (
-              <p className="text-brown-500">No recipes shared with this group yet.</p>
+              <p className="text-fg-secondary">
+                No recipes shared with this group yet.
+              </p>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {recipes.map((recipe) => (
@@ -203,12 +234,15 @@ export function GroupDetailClient({
             )}
           </section>
 
-          <div className="flex gap-3 pt-4 border-t border-cream-300">
+          <div className="flex gap-3 pt-4 border-t border-border">
             <Button variant="outline" onClick={handleLeave}>
               Leave Group
             </Button>
             {isAdmin && (
-              <Button variant="destructive" onClick={() => setDeleteDialog(true)}>
+              <Button
+                variant="destructive"
+                onClick={() => setDeleteDialog(true)}
+              >
                 Delete Group
               </Button>
             )}
@@ -221,12 +255,17 @@ export function GroupDetailClient({
           <DialogHeader>
             <DialogTitle>Delete &quot;{group.name}&quot;?</DialogTitle>
             <DialogDescription>
-              This will permanently delete the group and remove all shared recipe links. Recipes themselves won&apos;t be deleted.
+              This will permanently delete the group and remove all shared
+              recipe links. Recipes themselves won&apos;t be deleted.
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 justify-end">
-            <Button variant="outline" onClick={() => setDeleteDialog(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDeleteGroup}>Delete Group</Button>
+            <Button variant="outline" onClick={() => setDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteGroup}>
+              Delete Group
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

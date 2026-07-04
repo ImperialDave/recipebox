@@ -30,7 +30,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${dmSans.variable} ${lora.variable} antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('frb-theme');var d=t==='dark'||(t!=='light'&&(t==='system'||!t)&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body
+        className={`${dmSans.variable} ${lora.variable} antialiased bg-page text-fg`}
+      >
         <ThemeProvider>
           {children}
           <ToastProvider />

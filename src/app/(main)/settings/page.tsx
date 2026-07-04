@@ -5,8 +5,21 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AppHeader } from "@/components/layout/app-header";
 import { useTheme } from "@/components/providers/theme-provider";
 import { updateProfile } from "@/lib/actions/auth";
@@ -56,7 +69,7 @@ export default function SettingsPage() {
       <AppHeader />
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-lg mx-auto space-y-6">
-          <h1 className="font-serif text-3xl font-bold text-brown-800">Settings</h1>
+          <h1 className="font-serif text-3xl font-bold text-fg">Settings</h1>
 
           <Card>
             <CardHeader>
@@ -75,7 +88,12 @@ export default function SettingsPage() {
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" value={email} disabled className="mt-1 opacity-60" />
+                <Input
+                  id="email"
+                  value={email}
+                  disabled
+                  className="mt-1 opacity-60"
+                />
               </div>
               <Button onClick={handleSave} disabled={saving}>
                 {saving ? "Saving..." : "Save Profile"}
@@ -86,23 +104,36 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
-              <CardDescription>Customize how the app looks and feels</CardDescription>
+              <CardDescription>
+                Customize how the app looks and feels
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Dark Mode</Label>
-                  <p className="text-sm text-brown-500">Easier on the eyes at night</p>
-                </div>
-                <Switch
-                  checked={theme === "dark"}
-                  onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-                />
+              <div className="space-y-2">
+                <Label>Theme</Label>
+                <p className="text-sm text-fg-secondary">
+                  Choose light, dark, or match your device
+                </p>
+                <Select
+                  value={theme}
+                  onValueChange={(v) => setTheme(v as "light" | "dark" | "system")}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="light">Light</SelectItem>
+                    <SelectItem value="dark">Dark (Evening Kitchen)</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex items-center justify-between">
                 <div>
                   <Label>Large Text</Label>
-                  <p className="text-sm text-brown-500">Bigger, easier-to-read text</p>
+                  <p className="text-sm text-fg-secondary">
+                    Bigger, easier-to-read text
+                  </p>
                 </div>
                 <Switch
                   checked={textSize === "large"}
@@ -118,7 +149,11 @@ export default function SettingsPage() {
 
           <Card>
             <CardContent className="pt-6">
-              <Button variant="destructive" onClick={handleSignOut} className="w-full">
+              <Button
+                variant="destructive"
+                onClick={handleSignOut}
+                className="w-full"
+              >
                 Sign Out
               </Button>
             </CardContent>

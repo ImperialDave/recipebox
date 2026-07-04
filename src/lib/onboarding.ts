@@ -6,6 +6,9 @@ export function needsOnboarding(profile: Profile, groupCount: number): boolean {
   return true;
 }
 
-export function getPostAuthPath(profile: Profile, groupCount: number): "/onboarding" | "/" {
+export function getPostAuthPath(
+  profile: Profile,
+  groupCount: number,
+): "/onboarding" | "/" {
   return needsOnboarding(profile, groupCount) ? "/onboarding" : "/";
 }

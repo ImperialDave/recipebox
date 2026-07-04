@@ -22,7 +22,10 @@ export function PrintBatchClient({ recipes }: PrintBatchClientProps) {
   return (
     <div>
       {recipes.map((recipe, i) => (
-        <div key={recipe.id} style={{ pageBreakAfter: i < recipes.length - 1 ? "always" : "auto" }}>
+        <div
+          key={recipe.id}
+          style={{ pageBreakAfter: i < recipes.length - 1 ? "always" : "auto" }}
+        >
           <PrintView recipe={recipe} />
         </div>
       ))}

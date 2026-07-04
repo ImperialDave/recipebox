@@ -7,7 +7,13 @@ import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { signUpClient } from "@/lib/firebase/auth-client";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { toast } from "sonner";
@@ -34,20 +40,22 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-page p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sage-600 text-white">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent text-white">
             <BookOpen className="h-8 w-8" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-brown-800">{APP_NAME}</h1>
-          <p className="text-brown-500 mt-1">{APP_TAGLINE}</p>
+          <h1 className="font-serif text-3xl font-bold text-fg">{APP_NAME}</h1>
+          <p className="text-fg-secondary mt-1">{APP_TAGLINE}</p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Create your account</CardTitle>
-            <CardDescription>Start preserving your family&apos;s recipes today</CardDescription>
+            <CardDescription>
+              Start preserving your family&apos;s recipes today
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -87,14 +95,22 @@ export default function SignupPage() {
                   className="mt-1"
                 />
               </div>
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={loading}
+              >
                 {loading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
 
-            <p className="text-center text-sm text-brown-500 mt-6">
+            <p className="text-center text-sm text-fg-secondary mt-6">
               Already have an account?{" "}
-              <Link href="/login" className="text-sage-600 dark:text-sage-400 font-medium hover:underline">
+              <Link
+                href="/login"
+                className="text-accent font-medium hover:underline"
+              >
                 Sign in
               </Link>
             </p>

@@ -12,7 +12,11 @@ interface CookingModeProps {
   onClose: () => void;
 }
 
-export function CookingMode({ title, instructions, onClose }: CookingModeProps) {
+export function CookingMode({
+  title,
+  instructions,
+  onClose,
+}: CookingModeProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
@@ -25,7 +29,9 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
     if (timerSeconds <= 0) {
       setTimerActive(false);
       if (typeof window !== "undefined" && "Notification" in window) {
-        new Notification("Timer done!", { body: `Step ${currentStep + 1} timer finished` });
+        new Notification("Timer done!", {
+          body: `Step ${currentStep + 1} timer finished`,
+        });
       }
       return;
     }
@@ -59,25 +65,30 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-cream-100 cooking-mode flex flex-col">
-      <header className="flex items-center justify-between p-4 border-b border-cream-300 bg-cream-50">
-        <h1 className="font-serif text-xl font-semibold text-brown-800 truncate flex-1">
+    <div className="fixed inset-0 z-50 bg-page cooking-mode flex flex-col">
+      <header className="flex items-center justify-between p-4 border-b border-border bg-elevated">
+        <h1 className="font-serif text-xl font-semibold text-fg truncate flex-1">
           {title}
         </h1>
-        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Exit cooking mode">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          aria-label="Exit cooking mode"
+        >
           <X className="h-6 w-6" />
         </Button>
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-2xl mx-auto w-full">
-        <div className="text-sm text-brown-500 mb-4">
+        <div className="text-sm text-fg-secondary mb-4">
           Step {currentStep + 1} of {instructions.length}
         </div>
 
         <div
           className={cn(
-            "step-text text-center text-brown-800 mb-8 transition-opacity",
-            completedSteps.has(currentStep) && "opacity-50 line-through"
+            "step-text text-center text-fg mb-8 transition-opacity",
+            completedSteps.has(currentStep) && "opacity-50 line-through",
           )}
         >
           {step?.text}
@@ -87,7 +98,7 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
           <div className="mb-8">
             {timerActive && timerSeconds !== null ? (
               <div className="text-center">
-                <div className="text-4xl font-mono font-bold text-sage-600 mb-2">
+                <div className="text-4xl font-mono font-bold text-accent mb-2">
                   {formatTimer(timerSeconds)}
                 </div>
                 <Button variant="outline" onClick={() => setTimerActive(false)}>
@@ -114,7 +125,7 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
         </Button>
       </div>
 
-      <footer className="flex items-center justify-between p-4 border-t border-cream-300 bg-cream-50 gap-4">
+      <footer className="flex items-center justify-between p-4 border-t border-border bg-elevated gap-4">
         <Button
           variant="outline"
           size="lg"
@@ -127,7 +138,9 @@ export function CookingMode({ title, instructions, onClose }: CookingModeProps) 
         </Button>
         <Button
           size="lg"
-          onClick={() => setCurrentStep((s) => Math.min(instructions.length - 1, s + 1))}
+          onClick={() =>
+            setCurrentStep((s) => Math.min(instructions.length - 1, s + 1))
+          }
           disabled={currentStep === instructions.length - 1}
           className="flex-1"
         >

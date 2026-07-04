@@ -2,7 +2,13 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import { getSessionUser, getCurrentProfile } from "@/lib/firebase/auth-server";
 import { getUserGroupIds } from "@/lib/firebase/permissions";
 import { mapRecipeDoc, chunkArray, toISOString } from "@/lib/firebase/helpers";
-import type { Recipe, Profile, FamilyGroup, GroupMember, RecipeComment } from "@/lib/types";
+import type {
+  Recipe,
+  Profile,
+  FamilyGroup,
+  GroupMember,
+  RecipeComment,
+} from "@/lib/types";
 
 export async function getCurrentUser(): Promise<Profile | null> {
   return getCurrentProfile();
@@ -13,7 +19,10 @@ async function getAccessibleRecipes(userId: string | null): Promise<Recipe[]> {
   const recipeMap = new Map<string, Recipe>();
 
   if (userId) {
-    const ownSnap = await db.collection("recipes").where("owner_id", "==", userId).get();
+    const ownSnap = await db
+      .collection("recipes")
+      .where("owner_id", "==", userId)
+      .get();
     ownSnap.docs.forEach((doc) => {
       recipeMap.set(doc.id, mapRecipeDoc(doc.id, doc.data()));
     });
@@ -72,7 +81,9 @@ export async function getRecipes(filters?: {
   }
 
   if (filters?.tags && filters.tags.length > 0) {
-    result = result.filter((r) => filters.tags!.some((t) => r.tags.includes(t)));
+    result = result.filter((r) =>
+      filters.tags!.some((t) => r.tags.includes(t)),
+    );
   }
 
   if (filters?.timeRange) {
@@ -80,15 +91,19 @@ export async function getRecipes(filters?: {
       (r) =>
         r.total_time_minutes != null &&
         r.total_time_minutes >= filters.timeRange!.min &&
-        r.total_time_minutes <= filters.timeRange!.max
+        r.total_time_minutes <= filters.timeRange!.max,
     );
   }
 
   if (filters?.servings) {
-    result = result.filter((r) => r.servings != null && r.servings >= filters.servings!);
+    result = result.filter(
+      (r) => r.servings != null && r.servings >= filters.servings!,
+    );
   }
 
-  result = result.filter((r) => r.status === "published" || r.owner_id === userId);
+  result = result.filter(
+    (r) => r.status === "published" || r.owner_id === userId,
+  );
 
   if (filters?.search) {
     const search = filters.search.toLowerCase();
@@ -96,8 +111,12 @@ export async function getRecipes(filters?: {
       const inTitle = r.title.toLowerCase().includes(search);
       const inDesc = r.description?.toLowerCase().includes(search);
       const inTags = r.tags.some((t) => t.toLowerCase().includes(search));
-      const inIngredients = r.ingredients?.some((i) => i.name.toLowerCase().includes(search));
-      const inInstructions = r.instructions?.some((i) => i.text.toLowerCase().includes(search));
+      const inIngredients = r.ingredients?.some((i) =>
+        i.name.toLowerCase().includes(search),
+      );
+      const inInstructions = r.instructions?.some((i) =>
+        i.text.toLowerCase().includes(search),
+      );
       return inTitle || inDesc || inTags || inIngredients || inInstructions;
     });
   }
@@ -122,16 +141,24 @@ export async function getRecipes(filters?: {
 
   switch (filters?.sort) {
     case "oldest":
-      result.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      result.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+      );
       break;
     case "title":
       result.sort((a, b) => a.title.localeCompare(b.title));
       break;
     case "time":
-      result.sort((a, b) => (a.total_time_minutes || 999) - (b.total_time_minutes || 999));
+      result.sort(
+        (a, b) => (a.total_time_minutes || 999) - (b.total_time_minutes || 999),
+      );
       break;
     default:
-      result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      result.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
   }
 
   return result;
@@ -151,7 +178,10 @@ export async function getRecipe(id: string) {
       .get();
     recipe.is_favorited = favDoc.exists;
 
-    const ownerDoc = await getAdminDb().collection("users").doc(recipe.owner_id).get();
+    const ownerDoc = await getAdminDb()
+      .collection("users")
+      .doc(recipe.owner_id)
+      .get();
     if (ownerDoc.exists) {
       const owner = ownerDoc.data()!;
       recipe.owner = {
@@ -179,7 +209,10 @@ export async function getRecipeComments(recipeId: string) {
   const comments: RecipeComment[] = [];
   for (const doc of snap.docs) {
     const data = doc.data();
-    const profileDoc = await getAdminDb().collection("users").doc(data.user_id).get();
+    const profileDoc = await getAdminDb()
+      .collection("users")
+      .doc(data.user_id)
+      .get();
     const profile = profileDoc.data();
 
     comments.push({
@@ -267,7 +300,10 @@ export async function getGroupMembers(groupId: string) {
   const members: GroupMember[] = [];
   for (const doc of snap.docs) {
     const data = doc.data();
-    const profileDoc = await getAdminDb().collection("users").doc(data.user_id).get();
+    const profileDoc = await getAdminDb()
+      .collection("users")
+      .doc(data.user_id)
+      .get();
     const profile = profileDoc.data();
 
     members.push({
@@ -307,8 +343,13 @@ export async function getMealPlan(weekStart: string) {
   const entries = [];
   for (const doc of snap.docs) {
     const data = doc.data();
-    const recipeDoc = await getAdminDb().collection("recipes").doc(data.recipe_id).get();
-    const recipe = recipeDoc.exists ? mapRecipeDoc(recipeDoc.id, recipeDoc.data()!) : null;
+    const recipeDoc = await getAdminDb()
+      .collection("recipes")
+      .doc(data.recipe_id)
+      .get();
+    const recipe = recipeDoc.exists
+      ? mapRecipeDoc(recipeDoc.id, recipeDoc.data()!)
+      : null;
 
     entries.push({
       id: doc.id,

@@ -13,10 +13,10 @@ export async function updateProfile(data: {
   const user = await requireSessionUser();
   const db = getAdminDb();
 
-  await db.collection("users").doc(user.uid).set(
-    { ...data, updated_at: new Date() },
-    { merge: true }
-  );
+  await db
+    .collection("users")
+    .doc(user.uid)
+    .set({ ...data, updated_at: new Date() }, { merge: true });
 
   revalidatePath("/");
   revalidatePath("/settings");

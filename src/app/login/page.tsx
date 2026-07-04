@@ -7,7 +7,13 @@ import { BookOpen, Mail, Lock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   signInWithPasswordClient,
   sendMagicLinkClient,
@@ -54,27 +60,34 @@ export default function LoginPage() {
 
   if (magicSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-page p-4">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sage-100">
-              <Mail className="h-8 w-8 text-sage-600" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-subtle">
+              <Mail className="h-8 w-8 text-accent" />
             </div>
-            <CardTitle className="font-serif text-2xl">Check your email</CardTitle>
+            <CardTitle className="font-serif text-2xl">
+              Check your email
+            </CardTitle>
             <CardDescription className="text-base">
-              We sent a magic link to <strong>{email}</strong>. Click the link to sign in.
+              We sent a magic link to <strong>{email}</strong>. Click the link
+              to sign in.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
               <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
               <p>
-                <strong>Can&apos;t find the email?</strong> Magic link messages often land in your{" "}
-                <strong>spam or junk folder</strong>. Check there if nothing arrives in your inbox
-                within a minute or two.
+                <strong>Can&apos;t find the email?</strong> Magic link messages
+                often land in your <strong>spam or junk folder</strong>. Check
+                there if nothing arrives in your inbox within a minute or two.
               </p>
             </div>
-            <Button variant="outline" onClick={() => setMagicSent(false)} className="w-full">
+            <Button
+              variant="outline"
+              onClick={() => setMagicSent(false)}
+              className="w-full"
+            >
               Try a different email
             </Button>
           </CardContent>
@@ -84,20 +97,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-page p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sage-600 text-white">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent text-white">
             <BookOpen className="h-8 w-8" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-brown-800">{APP_NAME}</h1>
-          <p className="text-brown-500 mt-1">{APP_TAGLINE}</p>
+          <h1 className="font-serif text-3xl font-bold text-fg">{APP_NAME}</h1>
+          <p className="text-fg-secondary mt-1">{APP_TAGLINE}</p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Sign in to your family recipe collection</CardDescription>
+            <CardDescription>
+              Sign in to your family recipe collection
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex gap-2 mb-6">
@@ -119,7 +134,10 @@ export default function LoginPage() {
               </Button>
             </div>
 
-            <form onSubmit={mode === "magic" ? handleMagicLink : handlePassword} className="space-y-4">
+            <form
+              onSubmit={mode === "magic" ? handleMagicLink : handlePassword}
+              className="space-y-4"
+            >
               <div>
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -145,14 +163,26 @@ export default function LoginPage() {
                   />
                 </div>
               )}
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                {loading ? "Please wait..." : mode === "magic" ? "Send Magic Link" : "Sign In"}
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={loading}
+              >
+                {loading
+                  ? "Please wait..."
+                  : mode === "magic"
+                    ? "Send Magic Link"
+                    : "Sign In"}
               </Button>
             </form>
 
-            <p className="text-center text-sm text-brown-500 mt-6">
+            <p className="text-center text-sm text-fg-secondary mt-6">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-sage-600 dark:text-sage-400 font-medium hover:underline">
+              <Link
+                href="/signup"
+                className="text-accent font-medium hover:underline"
+              >
                 Sign up
               </Link>
             </p>

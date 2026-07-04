@@ -12,13 +12,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AppHeader } from "@/components/layout/app-header";
-import { addMealPlanEntry, removeMealPlanEntry, addToShoppingList } from "@/lib/actions/meal-planner";
+import {
+  addMealPlanEntry,
+  removeMealPlanEntry,
+  addToShoppingList,
+} from "@/lib/actions/meal-planner";
 import type { Recipe } from "@/lib/types";
 import { toast } from "sonner";
 import { format, addDays, startOfWeek, parseISO } from "date-fns";
 import Link from "next/link";
 
-const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 interface MealPlannerClientProps {
   recipes: Recipe[];
@@ -26,12 +38,22 @@ interface MealPlannerClientProps {
     id: string;
     day_of_week: number;
     recipe_id: string;
-    recipes: { id: string; title: string; hero_url: string | null; total_time_minutes: number | null; servings: number | null };
+    recipes: {
+      id: string;
+      title: string;
+      hero_url: string | null;
+      total_time_minutes: number | null;
+      servings: number | null;
+    };
   }>;
   weekStart: string;
 }
 
-export function MealPlannerClient({ recipes, initialMealPlan, weekStart }: MealPlannerClientProps) {
+export function MealPlannerClient({
+  recipes,
+  initialMealPlan,
+  weekStart,
+}: MealPlannerClientProps) {
   const [mealPlan, setMealPlan] = useState(initialMealPlan);
   const [currentWeekStart, setCurrentWeekStart] = useState(weekStart);
 
@@ -63,7 +85,11 @@ export function MealPlannerClient({ recipes, initialMealPlan, weekStart }: MealP
   const handleGenerateShoppingList = async () => {
     const recipeIds = [...new Set(mealPlan.map((e) => e.recipe_id))];
     const plannedRecipes = recipes.filter((r) => recipeIds.includes(r.id));
-    const allIngredients: { ingredient_name: string; quantity: string; unit: string }[] = [];
+    const allIngredients: {
+      ingredient_name: string;
+      quantity: string;
+      unit: string;
+    }[] = [];
 
     for (const recipe of plannedRecipes) {
       recipe.ingredients?.forEach((ing) => {
@@ -101,8 +127,12 @@ export function MealPlannerClient({ recipes, initialMealPlan, weekStart }: MealP
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="font-serif text-3xl font-bold text-brown-800">Meal Planner</h1>
-              <p className="text-brown-500 mt-1">Plan your week, one delicious meal at a time</p>
+              <h1 className="font-serif text-3xl font-bold text-fg">
+                Meal Planner
+              </h1>
+              <p className="text-fg-secondary mt-1">
+                Plan your week, one delicious meal at a time
+              </p>
             </div>
             <Button onClick={handleGenerateShoppingList} variant="outline">
               <ShoppingCart className="h-4 w-4 mr-1" />
@@ -114,7 +144,7 @@ export function MealPlannerClient({ recipes, initialMealPlan, weekStart }: MealP
             <Button variant="ghost" onClick={() => changeWeek(-1)}>
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <h2 className="font-serif text-xl font-semibold text-brown-800">
+            <h2 className="font-serif text-xl font-semibold text-fg">
               Week of {format(weekDate, "MMMM d, yyyy")}
             </h2>
             <Button variant="ghost" onClick={() => changeWeek(1)}>
@@ -131,25 +161,27 @@ export function MealPlannerClient({ recipes, initialMealPlan, weekStart }: MealP
                 <Card key={dayName} className="min-h-[200px]">
                   <CardContent className="p-4">
                     <div className="mb-3">
-                      <div className="font-semibold text-brown-800">{dayName}</div>
-                      <div className="text-xs text-brown-400">{format(dayDate, "MMM d")}</div>
+                      <div className="font-semibold text-fg">{dayName}</div>
+                      <div className="text-xs text-fg-muted">
+                        {format(dayDate, "MMM d")}
+                      </div>
                     </div>
 
                     <div className="space-y-2 mb-3">
                       {entries.map((entry) => (
                         <div
                           key={entry.id}
-                          className="flex items-center justify-between p-2 rounded-lg bg-cream-100 text-sm"
+                          className="flex items-center justify-between p-2 rounded-lg bg-page text-sm"
                         >
                           <Link
                             href={`/recipes/${entry.recipe_id}`}
-                            className="font-medium text-brown-700 hover:text-sage-600 truncate flex-1"
+                            className="font-medium text-fg-secondary hover:text-accent truncate flex-1"
                           >
                             {entry.recipes?.title || "Recipe"}
                           </Link>
                           <button
                             onClick={() => handleRemoveMeal(entry.id)}
-                            className="text-brown-400 hover:text-red-500 ml-2 shrink-0"
+                            className="text-fg-muted hover:text-destructive ml-2 shrink-0"
                           >
                             ×
                           </button>

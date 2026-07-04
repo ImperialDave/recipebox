@@ -10,7 +10,7 @@ export async function addMealPlanEntry(
   recipeId: string,
   dayOfWeek: number,
   weekStart: string,
-  groupId?: string
+  groupId?: string,
 ) {
   const user = await requireSessionUser();
   const db = getAdminDb();
@@ -29,7 +29,9 @@ export async function addMealPlanEntry(
   await ref.set(entryData);
 
   const recipeDoc = await db.collection("recipes").doc(recipeId).get();
-  const recipe = recipeDoc.exists ? mapRecipeDoc(recipeDoc.id, recipeDoc.data()!) : null;
+  const recipe = recipeDoc.exists
+    ? mapRecipeDoc(recipeDoc.id, recipeDoc.data()!)
+    : null;
 
   revalidatePath("/meal-planner");
   return {
@@ -61,7 +63,12 @@ export async function removeMealPlanEntry(entryId: string) {
 }
 
 export async function addToShoppingList(
-  items: { ingredient_name: string; quantity: string; unit: string; category?: string }[]
+  items: {
+    ingredient_name: string;
+    quantity: string;
+    unit: string;
+    category?: string;
+  }[],
 ) {
   const user = await requireSessionUser();
   const db = getAdminDb();
@@ -102,7 +109,11 @@ export async function addShoppingItem(data: {
   if (!name) throw new Error("Ingredient name is required");
 
   const db = getAdminDb();
-  const ref = db.collection("shoppingLists").doc(user.uid).collection("items").doc();
+  const ref = db
+    .collection("shoppingLists")
+    .doc(user.uid)
+    .collection("items")
+    .doc();
   const now = new Date();
 
   const item = {

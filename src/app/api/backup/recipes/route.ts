@@ -20,7 +20,7 @@ export async function GET(request: Request) {
         error: "Please wait before creating another backup",
         retry_after_seconds: rateLimit.retryAfterSeconds,
       },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -31,13 +31,18 @@ export async function GET(request: Request) {
   const recipes = await getBackupRecipes(user.uid, ownedOnly);
 
   if (recipes.length === 0) {
-    return NextResponse.json({ error: "No recipes to export" }, { status: 404 });
+    return NextResponse.json(
+      { error: "No recipes to export" },
+      { status: 404 },
+    );
   }
 
   if (recipes.length > MAX_RECIPES) {
     return NextResponse.json(
-      { error: `Too many recipes (${recipes.length}). Maximum is ${MAX_RECIPES}.` },
-      { status: 413 }
+      {
+        error: `Too many recipes (${recipes.length}). Maximum is ${MAX_RECIPES}.`,
+      },
+      { status: 413 },
     );
   }
 

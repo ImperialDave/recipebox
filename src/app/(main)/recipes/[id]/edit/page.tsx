@@ -12,10 +12,7 @@ export default async function EditRecipePage({ params }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const [recipe, groups] = await Promise.all([
-    getRecipe(id),
-    getUserGroups(),
-  ]);
+  const [recipe, groups] = await Promise.all([getRecipe(id), getUserGroups()]);
 
   if (!recipe) notFound();
   if (recipe.owner_id !== user.id) redirect(`/recipes/${id}`);
@@ -25,7 +22,7 @@ export default async function EditRecipePage({ params }: Props) {
       <AppHeader />
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="font-serif text-3xl font-bold text-brown-800 mb-8">
+          <h1 className="font-serif text-3xl font-bold text-fg mb-8">
             Edit Recipe
           </h1>
           <RecipeForm

@@ -24,21 +24,35 @@ export async function createSessionCookie(idToken: string) {
   }
 }
 
-export async function signInWithPasswordClient(email: string, password: string) {
+export async function signInWithPasswordClient(
+  email: string,
+  password: string,
+) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
   const idToken = await credential.user.getIdToken();
   await createSessionCookie(idToken);
   return credential.user;
 }
 
-export async function signUpClient(email: string, password: string, fullName: string) {
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
+export async function signUpClient(
+  email: string,
+  password: string,
+  fullName: string,
+) {
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password,
+  );
   await updateProfile(credential.user, { displayName: fullName });
 
   const res = await fetch("/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ idToken: await credential.user.getIdToken(), fullName }),
+    body: JSON.stringify({
+      idToken: await credential.user.getIdToken(),
+      fullName,
+    }),
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
@@ -69,7 +83,11 @@ export async function completeMagicLinkSignIn() {
   }
   if (!email) throw new Error("Email is required");
 
-  const credential = await signInWithEmailLink(auth, email, window.location.href);
+  const credential = await signInWithEmailLink(
+    auth,
+    email,
+    window.location.href,
+  );
   window.localStorage.removeItem(EMAIL_KEY);
 
   await fetch("/api/auth/register", {

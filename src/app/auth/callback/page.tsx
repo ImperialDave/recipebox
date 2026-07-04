@@ -14,7 +14,8 @@ export default function AuthCallbackPage() {
       .then(async () => {
         const res = await fetch("/api/auth/me");
         const data = await res.json();
-        const destination = data.redirect_to === "/onboarding" ? "/onboarding" : "/";
+        const destination =
+          data.redirect_to === "/onboarding" ? "/onboarding" : "/";
         router.push(destination);
         router.refresh();
       })
@@ -25,10 +26,10 @@ export default function AuthCallbackPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-page p-4">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
-          <a href="/login" className="text-sage-600 dark:text-sage-400 hover:underline">
+          <p className="text-destructive mb-4">{error}</p>
+          <a href="/login" className="text-accent hover:underline">
             Back to login
           </a>
         </div>
@@ -37,10 +38,12 @@ export default function AuthCallbackPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream-100">
+    <div className="min-h-screen flex items-center justify-center bg-page">
       <div className="text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-sage-600 dark:text-sage-400 mx-auto mb-4" />
-        <p className="text-brown-600 dark:text-brown-500">Signing you in...</p>
+        <Loader2 className="h-8 w-8 animate-spin text-accent mx-auto mb-4" />
+        <p className="text-fg-secondary dark:text-fg-secondary">
+          Signing you in...
+        </p>
       </div>
     </div>
   );

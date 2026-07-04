@@ -4,17 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-100 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-page disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
   {
     variants: {
       variant: {
-        default: "bg-sage-600 text-white shadow-sm hover:bg-sage-700 active:scale-[0.98]",
-        destructive: "bg-red-600 text-white shadow-sm hover:bg-red-700",
+        default:
+          "bg-accent text-accent-fg shadow-sm hover:bg-accent-hover active:scale-[0.98]",
+        destructive:
+          "bg-destructive text-destructive-fg shadow-sm hover:opacity-90",
         outline:
-          "border-2 border-cream-300 bg-cream-50 hover:bg-cream-200 text-brown-800",
-        secondary: "bg-terracotta-100 text-terracotta-800 hover:bg-terracotta-200",
-        ghost: "hover:bg-cream-200 text-brown-700",
-        link: "text-sage-600 underline-offset-4 hover:underline dark:text-sage-400",
+          "border-2 border-border bg-transparent hover:bg-overlay text-fg",
+        secondary: "bg-warm-muted text-warm-fg hover:opacity-90",
+        ghost: "hover:bg-overlay text-fg-secondary hover:text-fg",
+        link: "text-accent underline-offset-4 hover:underline",
       },
       size: {
         default: "h-11 px-5 py-2",
@@ -28,11 +30,12 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
@@ -47,7 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 

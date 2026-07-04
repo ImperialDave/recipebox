@@ -3,7 +3,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { backupZipFilename } from "@/lib/backup/filenames";
@@ -55,7 +61,7 @@ export function BackupCard() {
           toast.error(
             data.retry_after_seconds
               ? `Please wait ${Math.ceil(data.retry_after_seconds / 60)} minutes before another backup`
-              : "Please wait before creating another backup"
+              : "Please wait before creating another backup",
           );
           setRetryAfter(data.retry_after_seconds ?? null);
           setCanBackup(false);
@@ -75,7 +81,9 @@ export function BackupCard() {
       link.remove();
       URL.revokeObjectURL(url);
 
-      toast.success(`Backup downloaded${count !== null ? ` (${count} recipes)` : ""}`);
+      toast.success(
+        `Backup downloaded${count !== null ? ` (${count} recipes)` : ""}`,
+      );
       await loadPreview();
     } catch {
       toast.error("Could not download backup");
@@ -98,7 +106,9 @@ export function BackupCard() {
         <div className="flex items-center justify-between">
           <div>
             <Label>Include photos</Label>
-            <p className="text-sm text-brown-500">Add recipe hero images to the backup</p>
+            <p className="text-sm text-fg-secondary">
+              Add recipe hero images to the backup
+            </p>
           </div>
           <Switch checked={includePhotos} onCheckedChange={setIncludePhotos} />
         </div>
@@ -106,12 +116,14 @@ export function BackupCard() {
         <div className="flex items-center justify-between">
           <div>
             <Label>My recipes only</Label>
-            <p className="text-sm text-brown-500">Exclude recipes shared from family groups</p>
+            <p className="text-sm text-fg-secondary">
+              Exclude recipes shared from family groups
+            </p>
           </div>
           <Switch checked={ownedOnly} onCheckedChange={setOwnedOnly} />
         </div>
 
-        <p className="text-sm text-brown-600">
+        <p className="text-sm text-fg-secondary">
           {previewLoading
             ? "Checking your library..."
             : count === 0
@@ -126,7 +138,12 @@ export function BackupCard() {
           </p>
         )}
 
-        <Button onClick={handleDownload} disabled={disabled} className="w-full" size="lg">
+        <Button
+          onClick={handleDownload}
+          disabled={disabled}
+          className="w-full"
+          size="lg"
+        >
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />

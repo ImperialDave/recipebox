@@ -1,5 +1,10 @@
 import { GroupDetailClient } from "./group-detail-client";
-import { getGroup, getGroupMembers, getRecipes, getCurrentUser } from "@/lib/queries";
+import {
+  getGroup,
+  getGroupMembers,
+  getRecipes,
+  getCurrentUser,
+} from "@/lib/queries";
 import { notFound, redirect } from "next/navigation";
 
 interface Props {

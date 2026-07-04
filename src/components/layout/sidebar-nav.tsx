@@ -27,7 +27,7 @@ export function SidebarNav() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex w-64 flex-col border-r border-cream-300 bg-cream-50 p-4 no-print">
+    <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-surface p-4 no-print">
       <nav className="flex flex-col gap-1">
         {navItems.map((item) => {
           const isActive =
@@ -37,10 +37,11 @@ export function SidebarNav() {
           return (
             <Link key={item.href} href={item.href}>
               <Button
-                variant={isActive ? "secondary" : "ghost"}
+                variant="ghost"
                 className={cn(
                   "w-full justify-start gap-3",
-                  isActive && "bg-sage-100 text-sage-800"
+                  isActive &&
+                    "bg-accent-subtle text-accent border-l-2 border-accent rounded-l-none pl-[calc(1.25rem-2px)]",
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -53,7 +54,7 @@ export function SidebarNav() {
 
       <div className="mt-auto pt-4">
         <Link href="/recipes/new">
-          <Button className="w-full gap-2" size="lg">
+          <Button className="w-full gap-2 shadow-glow" size="lg">
             <Plus className="h-5 w-5" />
             Add New Recipe
           </Button>

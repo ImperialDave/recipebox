@@ -9,7 +9,11 @@ import {
   canDeleteRecipe,
   canViewRecipe,
 } from "@/lib/firebase/permissions";
-import { mapRecipeDoc, prepareIngredients, prepareInstructions } from "@/lib/firebase/helpers";
+import {
+  mapRecipeDoc,
+  prepareIngredients,
+  prepareInstructions,
+} from "@/lib/firebase/helpers";
 import type { RecipeFormData } from "@/lib/types";
 
 export async function createRecipe(data: RecipeFormData) {
@@ -95,7 +99,10 @@ export async function deleteRecipe(id: string) {
   const db = getAdminDb();
   await db.collection("recipes").doc(id).delete();
 
-  const comments = await db.collection("comments").where("recipe_id", "==", id).get();
+  const comments = await db
+    .collection("comments")
+    .where("recipe_id", "==", id)
+    .get();
   const batch = db.batch();
   comments.docs.forEach((doc) => batch.delete(doc.ref));
   await batch.commit();
@@ -150,9 +157,14 @@ export async function toggleFavorite(recipeId: string) {
   return { favorited: true };
 }
 
-export async function addComment(recipeId: string, content: string, photoUrl?: string) {
+export async function addComment(
+  recipeId: string,
+  content: string,
+  photoUrl?: string,
+) {
   const user = await requireSessionUser();
-  if (!(await canViewRecipe(recipeId, user.uid))) throw new Error("Not authorized");
+  if (!(await canViewRecipe(recipeId, user.uid)))
+    throw new Error("Not authorized");
 
   const db = getAdminDb();
   const commentRef = db.collection("comments").doc();
@@ -191,7 +203,10 @@ export async function addComment(recipeId: string, content: string, photoUrl?: s
   };
 }
 
-export async function uploadRecipeImage(file: File, folder: string = "recipe-images") {
+export async function uploadRecipeImage(
+  file: File,
+  folder: string = "recipe-images",
+) {
   const user = await requireSessionUser();
   const ext = file.name.split(".").pop() || "jpg";
   const fileName = `${folder}/${user.uid}/${uuidv4()}.${ext}`;

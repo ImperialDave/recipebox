@@ -3,7 +3,7 @@ import type { Recipe } from "@/lib/types";
 
 export async function getBackupRecipes(
   userId: string,
-  ownedOnly: boolean
+  ownedOnly: boolean,
 ): Promise<Recipe[]> {
   const recipes = await getRecipes({ sort: "title" });
 

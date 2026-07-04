@@ -1,6 +1,8 @@
 const IMAGE_TIMEOUT_MS = 5000;
 
-export async function fetchImageBuffer(url: string): Promise<{ buffer: Buffer; ext: string } | null> {
+export async function fetchImageBuffer(
+  url: string,
+): Promise<{ buffer: Buffer; ext: string } | null> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), IMAGE_TIMEOUT_MS);
@@ -11,7 +13,8 @@ export async function fetchImageBuffer(url: string): Promise<{ buffer: Buffer; e
     if (!res.ok) return null;
 
     const contentType = res.headers.get("content-type") || "";
-    const ext = extensionFromContentType(contentType) || extensionFromUrl(url) || "jpg";
+    const ext =
+      extensionFromContentType(contentType) || extensionFromUrl(url) || "jpg";
     const buffer = Buffer.from(await res.arrayBuffer());
 
     if (buffer.length === 0 || buffer.length > 10 * 1024 * 1024) return null;

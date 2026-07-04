@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { createGroup, joinGroup } from "@/lib/actions/groups";
 import { updateProfile } from "@/lib/actions/auth";
 import { APP_NAME } from "@/lib/constants";
@@ -35,7 +41,9 @@ export default function OnboardingClient() {
       await completeOnboarding();
       toast.success("Family group created with sample recipes!");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create group");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create group",
+      );
       setLoading(false);
     }
   };
@@ -47,7 +55,9 @@ export default function OnboardingClient() {
     try {
       const result = await joinGroup(inviteCode);
       await completeOnboarding();
-      toast.success(result.alreadyMember ? "Welcome back!" : "Joined the family group!");
+      toast.success(
+        result.alreadyMember ? "Welcome back!" : "Joined the family group!",
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Invalid invite code");
       setLoading(false);
@@ -56,25 +66,28 @@ export default function OnboardingClient() {
 
   if (step === "welcome") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-page p-4">
         <div className="w-full max-w-lg text-center">
-          <h1 className="font-serif text-4xl font-bold text-brown-800 mb-3">
+          <h1 className="font-serif text-4xl font-bold text-fg mb-3">
             Welcome to {APP_NAME}! 🎉
           </h1>
-          <p className="text-lg text-brown-500 mb-8">
-            Let&apos;s get your family&apos;s recipe collection started. Create a new group or join one you&apos;ve been invited to.
+          <p className="text-lg text-fg-secondary mb-8">
+            Let&apos;s get your family&apos;s recipe collection started. Create
+            a new group or join one you&apos;ve been invited to.
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Card
-              className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-sage-300"
+              className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-accent"
               onClick={() => setStep("create")}
             >
               <CardHeader className="text-center">
-                <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-sage-100">
-                  <Plus className="h-7 w-7 text-sage-600" />
+                <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-subtle">
+                  <Plus className="h-7 w-7 text-accent" />
                 </div>
-                <CardTitle className="font-serif">Create a Family Group</CardTitle>
+                <CardTitle className="font-serif">
+                  Create a Family Group
+                </CardTitle>
                 <CardDescription>
                   Start fresh with 10 sample recipes to explore
                 </CardDescription>
@@ -82,12 +95,12 @@ export default function OnboardingClient() {
             </Card>
 
             <Card
-              className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-terracotta-300"
+              className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-warm"
               onClick={() => setStep("join")}
             >
               <CardHeader className="text-center">
-                <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-terracotta-100">
-                  <Link2 className="h-7 w-7 text-terracotta-600" />
+                <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-warm-muted">
+                  <Link2 className="h-7 w-7 text-warm" />
                 </div>
                 <CardTitle className="font-serif">Join a Group</CardTitle>
                 <CardDescription>
@@ -107,15 +120,18 @@ export default function OnboardingClient() {
 
   if (step === "create") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-page p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex items-center gap-3 mb-2">
-              <Users className="h-6 w-6 text-sage-600" />
-              <CardTitle className="font-serif text-2xl">Create Your Family Group</CardTitle>
+              <Users className="h-6 w-6 text-accent" />
+              <CardTitle className="font-serif text-2xl">
+                Create Your Family Group
+              </CardTitle>
             </div>
             <CardDescription>
-              Give your group a name. We&apos;ll add 10 beloved family recipes to get you started!
+              Give your group a name. We&apos;ll add 10 beloved family recipes
+              to get you started!
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -142,7 +158,11 @@ export default function OnboardingClient() {
                 />
               </div>
               <div className="flex gap-3">
-                <Button type="button" variant="outline" onClick={() => setStep("welcome")}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep("welcome")}
+                >
                   Back
                 </Button>
                 <Button type="submit" className="flex-1" disabled={loading}>
@@ -157,10 +177,12 @@ export default function OnboardingClient() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-page p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="font-serif text-2xl">Join a Family Group</CardTitle>
+          <CardTitle className="font-serif text-2xl">
+            Join a Family Group
+          </CardTitle>
           <CardDescription>
             Enter the invite code shared by a family member
           </CardDescription>
@@ -180,7 +202,11 @@ export default function OnboardingClient() {
               />
             </div>
             <div className="flex gap-3">
-              <Button type="button" variant="outline" onClick={() => setStep("welcome")}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep("welcome")}
+              >
                 Back
               </Button>
               <Button type="submit" className="flex-1" disabled={loading}>

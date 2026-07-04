@@ -18,5 +18,7 @@ export default async function RecipeDetailPage({ params }: Props) {
 
   if (!recipe) notFound();
 
-  return <RecipeDetailClient recipe={recipe} comments={comments} userId={user.id} />;
+  return (
+    <RecipeDetailClient recipe={recipe} comments={comments} userId={user.id} />
+  );
 }
