@@ -12,7 +12,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, APP_NAV_SUBTITLE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -38,7 +38,7 @@ export function SidebarNav() {
             <p className="font-serif text-base font-semibold text-fg truncate leading-tight">
               {APP_NAME}
             </p>
-            <p className="text-xs text-fg-muted truncate">Family recipes</p>
+            <p className="text-xs text-fg-muted truncate">{APP_NAV_SUBTITLE}</p>
           </div>
         </Link>
       </div>

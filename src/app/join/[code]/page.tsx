@@ -50,7 +50,7 @@ export default function JoinPage() {
             Join a Family Group
           </CardTitle>
           <CardDescription className="text-base">
-            You&apos;ve been invited to join a family recipe group
+            You&apos;ve been invited to join a recipe group
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

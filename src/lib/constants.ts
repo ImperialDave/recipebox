@@ -1,5 +1,7 @@
-export const APP_NAME = "The Family Recipe Box";
-export const APP_TAGLINE = "Family traditions, one recipe at a time";
+export const APP_NAME = "Recipe Vault Club";
+export const APP_TAGLINE = "Collect, protect, and share the recipes you love";
+export const APP_SHORT_NAME = "Recipe Vault";
+export const APP_NAV_SUBTITLE = "Your recipe vault";
 
 export const DEFAULT_CATEGORIES = [
   "Breakfast & Brunch",

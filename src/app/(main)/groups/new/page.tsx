@@ -50,8 +50,7 @@ export default function NewGroupPage() {
                 Create a Family Group
               </CardTitle>
               <CardDescription>
-                We&apos;ll add 10 beloved family recipes so you can explore
-                right away!
+                We&apos;ll add 10 starter recipes so you can explore right away!
               </CardDescription>
             </CardHeader>
             <CardContent>

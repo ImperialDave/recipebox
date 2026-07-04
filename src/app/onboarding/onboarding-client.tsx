@@ -72,8 +72,8 @@ export default function OnboardingClient() {
             Welcome to {APP_NAME}! 🎉
           </h1>
           <p className="text-lg text-fg-secondary mb-8">
-            Let&apos;s get your family&apos;s recipe collection started. Create
-            a new group or join one you&apos;ve been invited to.
+            Let&apos;s get your recipe vault started. Create a new group or join
+            one you&apos;ve been invited to.
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -130,8 +130,8 @@ export default function OnboardingClient() {
               </CardTitle>
             </div>
             <CardDescription>
-              Give your group a name. We&apos;ll add 10 beloved family recipes
-              to get you started!
+              Give your group a name. We&apos;ll add 10 starter recipes to get
+              you started!
             </CardDescription>
           </CardHeader>
           <CardContent>

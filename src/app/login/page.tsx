@@ -111,7 +111,7 @@ export default function LoginPage() {
           <CardHeader>
             <CardTitle>Welcome back</CardTitle>
             <CardDescription>
-              Sign in to your family recipe collection
+              Sign in to your vault
             </CardDescription>
           </CardHeader>
           <CardContent>

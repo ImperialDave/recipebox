@@ -18,7 +18,7 @@ export default async function FavoritesPage() {
             My Saved Recipes
           </h1>
           <p className="text-fg-secondary mb-8">
-            Your favorite family recipes, always close at hand
+            Your saved recipes, always close at hand
           </p>
 
           {recipes.length === 0 ? (

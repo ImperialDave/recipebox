@@ -54,7 +54,7 @@ export default function SignupPage() {
           <CardHeader>
             <CardTitle>Create your account</CardTitle>
             <CardDescription>
-              Start preserving your family&apos;s recipes today
+              Join the club and start building your vault
             </CardDescription>
           </CardHeader>
           <CardContent>

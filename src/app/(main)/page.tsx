@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/layout/app-header";
 import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getCurrentUser, getRecipes, getUserGroups } from "@/lib/queries";
-import { APP_NAME } from "@/lib/constants";
 import { redirect } from "next/navigation";
 
 export default async function HomePage() {
@@ -29,8 +28,8 @@ export default async function HomePage() {
               ! 👋
             </h1>
             <p className="text-lg text-fg-secondary">
-              Your family&apos;s recipes, stories, and traditions — all in one
-              beautiful place.
+              Your recipes, stories, and traditions — secured in one beautiful
+              vault.
             </p>
           </section>
 
@@ -67,7 +66,7 @@ export default async function HomePage() {
                     {groups.length} Groups
                   </div>
                   <div className="text-fg-secondary text-sm">
-                    Family recipe sharing
+                    Share with your club
                   </div>
                 </div>
               </div>
@@ -94,7 +93,7 @@ export default async function HomePage() {
             <section className="text-center py-16">
               <div className="text-6xl mb-4">📖</div>
               <h2 className="font-serif text-2xl font-semibold text-fg mb-2">
-                Your recipe box is waiting
+                Your vault is waiting
               </h2>
               <p className="text-fg-secondary mb-6 max-w-md mx-auto">
                 Create a family group to get started with sample recipes, or add

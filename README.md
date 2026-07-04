@@ -1,6 +1,6 @@
-# The Family Recipe Box
+# Recipe Vault Club
 
-A warm, trustworthy digital heirloom cookbook designed for families. Store rich recipes with photos and stories, share safely with role-based family groups, and print beautifully formatted recipes.
+A warm, trustworthy digital heirloom cookbook. Store rich recipes with photos and stories, share safely with role-based family groups, and print beautifully formatted recipes.
 
 ## Features
 
@@ -11,7 +11,7 @@ A warm, trustworthy digital heirloom cookbook designed for families. Store rich 
 - **Cooking Mode** — full-screen step-by-step with timers and check-off
 - **Print-optimized layouts** — high contrast, large type, clean margins
 - **Favorites, meal planner, and shopping list**
-- **10 seeded family recipes** when you create a new group
+- **10 starter recipes** when you create a new group
 - **Dark mode & large text** accessibility options
 
 ## Tech Stack
@@ -76,7 +76,7 @@ Open [http://localhost:3000](http://localhost:3000)
 4. Add all environment variables from `.env.local.example`:
    - All `NEXT_PUBLIC_FIREBASE_*` variables
    - `FIREBASE_SERVICE_ACCOUNT_KEY` (paste JSON as single line)
-   - `NEXT_PUBLIC_APP_URL` (your Railway domain, e.g. `https://family-recipe-box.up.railway.app`)
+   - `NEXT_PUBLIC_APP_URL` (your Railway domain, e.g. `https://www.recipevault.club`)
 5. Railway will auto-detect `railway.toml` and deploy
 
 After deploy, add your Railway domain to Firebase **Authorized domains**.
