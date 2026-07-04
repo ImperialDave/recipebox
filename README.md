@@ -109,6 +109,7 @@ firebase/
 | `groups/{id}` | Family groups |
 | `groups/{id}/members/{uid}` | Group membership & roles |
 | `recipes/{id}` | Recipes with embedded ingredients/instructions |
+| `recipes/{id}/edits/{editId}` | Recipe edit history (creator + change log) |
 | `comments/{id}` | Recipe family notes |
 | `favorites/{uid}_{recipeId}` | User favorites |
 | `mealPlans/{id}` | Weekly meal plan entries |

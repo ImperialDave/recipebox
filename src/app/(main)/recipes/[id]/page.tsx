@@ -1,5 +1,11 @@
 import { RecipeDetailClient } from "./recipe-detail-client";
-import { getRecipe, getRecipeComments, getCurrentUser } from "@/lib/queries";
+import {
+  getRecipe,
+  getRecipeComments,
+  getRecipeEditHistory,
+  getCurrentUser,
+} from "@/lib/queries";
+import { canEditRecipe } from "@/lib/firebase/permissions";
 import { notFound, redirect } from "next/navigation";
 
 interface Props {
@@ -11,14 +17,22 @@ export default async function RecipeDetailPage({ params }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const [recipe, comments] = await Promise.all([
+  const [recipe, comments, edits, canEdit] = await Promise.all([
     getRecipe(id),
     getRecipeComments(id),
+    getRecipeEditHistory(id),
+    canEditRecipe(id, user.id),
   ]);
 
   if (!recipe) notFound();
 
   return (
-    <RecipeDetailClient recipe={recipe} comments={comments} userId={user.id} />
+    <RecipeDetailClient
+      recipe={recipe}
+      comments={comments}
+      edits={edits}
+      userId={user.id}
+      canEdit={canEdit}
+    />
   );
 }

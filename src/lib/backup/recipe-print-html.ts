@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
-import { formatMinutes } from "@/lib/utils";
+import { formatMinutes, getDisplayName } from "@/lib/utils";
 import type { Recipe } from "@/lib/types";
 
 const PRINT_CSS = `
@@ -121,6 +121,12 @@ export function renderRecipeHtml(
     ? `<div class="description">${escapeHtml(recipe.description)}</div>`
     : "";
 
+  const creatorName = escapeHtml(getDisplayName(recipe.owner));
+  const createdDate = escapeHtml(
+    format(new Date(recipe.created_at), "MMMM d, yyyy"),
+  );
+  const attribution = `<p class="description">Added by ${creatorName} · ${createdDate}</p>`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -137,6 +143,7 @@ export function renderRecipeHtml(
   </header>
 
   <h1>${escapeHtml(recipe.title)}</h1>
+  ${attribution}
 
   ${metaParts.length > 0 ? `<div class="meta">${metaParts.join("")}</div>` : ""}
   ${image}

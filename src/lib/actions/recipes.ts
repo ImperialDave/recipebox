@@ -14,7 +14,31 @@ import {
   prepareIngredients,
   prepareInstructions,
 } from "@/lib/firebase/helpers";
-import type { RecipeFormData } from "@/lib/types";
+import {
+  buildEditSummary,
+  computeRecipeChanges,
+  formDataToSnapshot,
+  toRecipeSnapshot,
+} from "@/lib/recipe-changes";
+import type { RecipeEditChange, RecipeFormData } from "@/lib/types";
+
+async function recordRecipeEdit(
+  recipeId: string,
+  data: {
+    edited_by: string;
+    edited_at: Date;
+    action: "created" | "updated";
+    summary: string;
+    changes: RecipeEditChange[];
+  },
+) {
+  const db = getAdminDb();
+  await db
+    .collection("recipes")
+    .doc(recipeId)
+    .collection("edits")
+    .add(data);
+}
 
 export async function createRecipe(data: RecipeFormData) {
   const user = await requireSessionUser();
@@ -49,6 +73,13 @@ export async function createRecipe(data: RecipeFormData) {
   };
 
   await recipeRef.set(recipeData);
+  await recordRecipeEdit(recipeRef.id, {
+    edited_by: user.uid,
+    edited_at: now,
+    action: "created",
+    summary: "Recipe created",
+    changes: [],
+  });
   const recipe = mapRecipeDoc(recipeRef.id, recipeData);
 
   revalidatePath("/recipes");
@@ -60,32 +91,63 @@ export async function updateRecipe(id: string, data: RecipeFormData) {
   const user = await requireSessionUser();
   if (!(await canEditRecipe(id, user.uid))) throw new Error("Not authorized");
 
+  const db = getAdminDb();
+  const recipeRef = db.collection("recipes").doc(id);
+  const currentDoc = await recipeRef.get();
+  if (!currentDoc.exists) throw new Error("Recipe not found");
+
   const totalTime =
     data.total_time_minutes ??
     ((data.prep_time_minutes || 0) + (data.cook_time_minutes || 0) || null);
 
-  await getAdminDb()
-    .collection("recipes")
-    .doc(id)
-    .update({
-      title: data.title,
-      description: data.description || null,
-      hero_url: data.hero_url,
-      gallery_urls: data.gallery_urls,
-      prep_time_minutes: data.prep_time_minutes,
-      cook_time_minutes: data.cook_time_minutes,
-      total_time_minutes: totalTime,
-      servings: data.servings,
-      difficulty: data.difficulty,
-      category: data.category,
-      tags: data.tags,
-      status: data.status,
-      is_private: data.is_private,
-      ingredients: prepareIngredients(data.ingredients),
-      instructions: prepareInstructions(data.instructions),
-      group_ids: data.is_private ? [] : data.group_ids,
-      updated_at: new Date(),
+  const now = new Date();
+  const before = toRecipeSnapshot(currentDoc.data()!);
+  const after = formDataToSnapshot({
+    ...data,
+    total_time_minutes: totalTime,
+    group_ids: data.is_private ? [] : data.group_ids,
+    ingredients: prepareIngredients(data.ingredients).map((ing) => ({
+      quantity: ing.quantity,
+      unit: ing.unit,
+      name: ing.name,
+      prep_note: ing.prep_note,
+    })),
+    instructions: prepareInstructions(data.instructions).map((inst) => ({
+      text: inst.text,
+      timer_minutes: inst.timer_minutes,
+    })),
+  });
+  const changes = computeRecipeChanges(before, after);
+
+  await recipeRef.update({
+    title: data.title,
+    description: data.description || null,
+    hero_url: data.hero_url,
+    gallery_urls: data.gallery_urls,
+    prep_time_minutes: data.prep_time_minutes,
+    cook_time_minutes: data.cook_time_minutes,
+    total_time_minutes: totalTime,
+    servings: data.servings,
+    difficulty: data.difficulty,
+    category: data.category,
+    tags: data.tags,
+    status: data.status,
+    is_private: data.is_private,
+    ingredients: prepareIngredients(data.ingredients),
+    instructions: prepareInstructions(data.instructions),
+    group_ids: data.is_private ? [] : data.group_ids,
+    updated_at: now,
+  });
+
+  if (changes.length > 0) {
+    await recordRecipeEdit(id, {
+      edited_by: user.uid,
+      edited_at: now,
+      action: "updated",
+      summary: buildEditSummary(changes),
+      changes,
     });
+  }
 
   revalidatePath(`/recipes/${id}`);
   revalidatePath("/recipes");
@@ -132,6 +194,13 @@ export async function duplicateRecipe(id: string) {
   };
 
   await newRef.set(recipeData);
+  await recordRecipeEdit(newRef.id, {
+    edited_by: user.uid,
+    edited_at: now,
+    action: "created",
+    summary: "Recipe created",
+    changes: [],
+  });
   const recipe = mapRecipeDoc(newRef.id, recipeData);
 
   revalidatePath("/recipes");

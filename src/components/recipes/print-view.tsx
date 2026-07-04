@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { formatMinutes } from "@/lib/utils";
+import { RecipeAttribution } from "@/components/recipes/recipe-attribution";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Recipe } from "@/lib/types";
 import { format } from "date-fns";
@@ -30,6 +31,12 @@ export function PrintView({
       </header>
 
       <h1 className="font-serif text-3xl font-bold mb-4">{recipe.title}</h1>
+
+      <RecipeAttribution
+        owner={recipe.owner}
+        createdAt={recipe.created_at}
+        variant="print"
+      />
 
       {(recipe.prep_time_minutes ||
         recipe.cook_time_minutes ||

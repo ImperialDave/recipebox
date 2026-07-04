@@ -8,7 +8,72 @@ import type {
   FamilyGroup,
   GroupMember,
   RecipeComment,
+  RecipeEdit,
 } from "@/lib/types";
+
+function mapProfileDoc(id: string, data: Record<string, unknown>): Profile {
+  return {
+    id,
+    email: typeof data.email === "string" ? data.email : "",
+    full_name: typeof data.full_name === "string" ? data.full_name : null,
+    avatar_url: typeof data.avatar_url === "string" ? data.avatar_url : null,
+    onboarding_complete: Boolean(data.onboarding_complete),
+    created_at: toISOString(
+      data.created_at as Parameters<typeof toISOString>[0],
+    ),
+    updated_at: toISOString(
+      data.updated_at as Parameters<typeof toISOString>[0],
+    ),
+  };
+}
+
+export async function attachOwnersToRecipes(
+  recipes: Recipe[],
+): Promise<Recipe[]> {
+  if (recipes.length === 0) return recipes;
+
+  const db = getAdminDb();
+  const ownerIds = [...new Set(recipes.map((recipe) => recipe.owner_id))];
+  const profileMap = new Map<string, Profile>();
+
+  for (const chunk of chunkArray(ownerIds, 10)) {
+    const refs = chunk.map((id) => db.collection("users").doc(id));
+    const docs = await db.getAll(...refs);
+    for (const doc of docs) {
+      if (doc.exists) {
+        profileMap.set(doc.id, mapProfileDoc(doc.id, doc.data()!));
+      }
+    }
+  }
+
+  return recipes.map((recipe) => ({
+    ...recipe,
+    owner: profileMap.get(recipe.owner_id),
+  }));
+}
+
+async function attachEditorsToEdits(edits: RecipeEdit[]): Promise<RecipeEdit[]> {
+  if (edits.length === 0) return edits;
+
+  const db = getAdminDb();
+  const editorIds = [...new Set(edits.map((edit) => edit.edited_by))];
+  const profileMap = new Map<string, Profile>();
+
+  for (const chunk of chunkArray(editorIds, 10)) {
+    const refs = chunk.map((id) => db.collection("users").doc(id));
+    const docs = await db.getAll(...refs);
+    for (const doc of docs) {
+      if (doc.exists) {
+        profileMap.set(doc.id, mapProfileDoc(doc.id, doc.data()!));
+      }
+    }
+  }
+
+  return edits.map((edit) => ({
+    ...edit,
+    editor: profileMap.get(edit.edited_by),
+  }));
+}
 
 export async function getCurrentUser(): Promise<Profile | null> {
   return getCurrentProfile();
@@ -161,7 +226,7 @@ export async function getRecipes(filters?: {
       );
   }
 
-  return result;
+  return attachOwnersToRecipes(result);
 }
 
 export async function getRecipe(id: string) {
@@ -169,7 +234,7 @@ export async function getRecipe(id: string) {
   const doc = await getAdminDb().collection("recipes").doc(id).get();
   if (!doc.exists) return null;
 
-  const recipe = mapRecipeDoc(doc.id, doc.data()!);
+  let recipe = mapRecipeDoc(doc.id, doc.data()!);
 
   if (sessionUser) {
     const favDoc = await getAdminDb()
@@ -177,26 +242,38 @@ export async function getRecipe(id: string) {
       .doc(`${sessionUser.uid}_${id}`)
       .get();
     recipe.is_favorited = favDoc.exists;
-
-    const ownerDoc = await getAdminDb()
-      .collection("users")
-      .doc(recipe.owner_id)
-      .get();
-    if (ownerDoc.exists) {
-      const owner = ownerDoc.data()!;
-      recipe.owner = {
-        id: recipe.owner_id,
-        email: owner.email || "",
-        full_name: owner.full_name || null,
-        avatar_url: owner.avatar_url || null,
-        onboarding_complete: owner.onboarding_complete ?? false,
-        created_at: toISOString(owner.created_at),
-        updated_at: toISOString(owner.updated_at),
-      };
-    }
   }
 
+  [recipe] = await attachOwnersToRecipes([recipe]);
   return recipe;
+}
+
+export async function getRecipeEditHistory(
+  recipeId: string,
+  limit = 50,
+): Promise<RecipeEdit[]> {
+  const snap = await getAdminDb()
+    .collection("recipes")
+    .doc(recipeId)
+    .collection("edits")
+    .orderBy("edited_at", "desc")
+    .limit(limit)
+    .get();
+
+  const edits: RecipeEdit[] = snap.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      recipe_id: recipeId,
+      edited_by: data.edited_by,
+      edited_at: toISOString(data.edited_at),
+      action: data.action || "updated",
+      summary: data.summary || "Updated recipe",
+      changes: data.changes || [],
+    };
+  });
+
+  return attachEditorsToEdits(edits);
 }
 
 export async function getRecipeComments(recipeId: string) {

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Clock, Users, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { RecipeAttribution } from "@/components/recipes/recipe-attribution";
 import { formatMinutes } from "@/lib/utils";
 import type { Recipe } from "@/lib/types";
 import { toggleFavorite } from "@/lib/actions/recipes";
@@ -88,6 +89,11 @@ export function RecipeCard({
                 </span>
               )}
             </div>
+            <RecipeAttribution
+              owner={recipe.owner}
+              createdAt={recipe.created_at}
+              variant="compact"
+            />
             <div className="flex gap-1.5 mt-2 flex-wrap">
               {recipe.tags.slice(0, 3).map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">
@@ -151,6 +157,13 @@ export function RecipeCard({
           <h3 className="font-serif text-lg font-semibold text-fg line-clamp-2">
             {recipe.title}
           </h3>
+          <div className="mt-1">
+            <RecipeAttribution
+              owner={recipe.owner}
+              createdAt={recipe.created_at}
+              variant="compact"
+            />
+          </div>
           <div className="flex items-center gap-3 mt-2 text-sm text-fg-secondary">
             {recipe.total_time_minutes && (
               <span className="flex items-center gap-1">

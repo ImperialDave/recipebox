@@ -22,6 +22,15 @@ export function generateInviteCode(): string {
   return code;
 }
 
+export function getDisplayName(
+  profile?: { full_name?: string | null; email?: string } | null,
+  fallback = "A club member",
+): string {
+  if (profile?.full_name?.trim()) return profile.full_name.trim();
+  if (profile?.email) return profile.email.split("@")[0];
+  return fallback;
+}
+
 export function slugify(text: string): string {
   return text
     .toLowerCase()

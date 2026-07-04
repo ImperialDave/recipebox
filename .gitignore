@@ -35,6 +35,10 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# firebase local config and service accounts
+.firebaserc
+*firebase-adminsdk*.json
+
 # vercel
 .vercel
 

@@ -46,6 +46,15 @@ service cloud.firestore {
         resource.data.owner_id == request.auth.uid ||
         hasEditorRole(resource.data.group_ids)
       );
+
+      match /edits/{editId} {
+        allow read: if isSignedIn() && (
+          get(/databases/$(database)/documents/recipes/$(recipeId)).data.owner_id == request.auth.uid ||
+          (get(/databases/$(database)/documents/recipes/$(recipeId)).data.status == 'published' &&
+            get(/databases/$(database)/documents/recipes/$(recipeId)).data.is_private == false)
+        );
+        allow write: if false;
+      }
     }
 
     function getUserGroupIds() {

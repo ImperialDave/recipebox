@@ -1,6 +1,7 @@
 import { AppHeader } from "@/components/layout/app-header";
 import { RecipeForm } from "@/components/recipes/recipe-form";
 import { getRecipe, getCurrentUser, getUserGroups } from "@/lib/queries";
+import { canEditRecipe } from "@/lib/firebase/permissions";
 import { notFound, redirect } from "next/navigation";
 
 interface Props {
@@ -15,7 +16,7 @@ export default async function EditRecipePage({ params }: Props) {
   const [recipe, groups] = await Promise.all([getRecipe(id), getUserGroups()]);
 
   if (!recipe) notFound();
-  if (recipe.owner_id !== user.id) redirect(`/recipes/${id}`);
+  if (!(await canEditRecipe(id, user.id))) redirect(`/recipes/${id}`);
 
   return (
     <>

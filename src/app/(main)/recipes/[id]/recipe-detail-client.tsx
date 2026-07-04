@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/dialog";
 import { CookingMode } from "@/components/recipes/cooking-mode";
 import { PrintView } from "@/components/recipes/print-view";
+import { RecipeAttribution } from "@/components/recipes/recipe-attribution";
+import { RecipeEditHistory } from "@/components/recipes/recipe-edit-history";
 import { formatMinutes } from "@/lib/utils";
 import {
   toggleFavorite,
@@ -38,20 +40,24 @@ import {
   addComment,
 } from "@/lib/actions/recipes";
 import { addToShoppingList } from "@/lib/actions/meal-planner";
-import type { Recipe, RecipeComment } from "@/lib/types";
+import type { Recipe, RecipeComment, RecipeEdit } from "@/lib/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 interface RecipeDetailClientProps {
   recipe: Recipe;
   comments: RecipeComment[];
+  edits: RecipeEdit[];
   userId: string;
+  canEdit: boolean;
 }
 
 export function RecipeDetailClient({
   recipe,
   comments: initialComments,
+  edits,
   userId,
+  canEdit,
 }: RecipeDetailClientProps) {
   const router = useRouter();
   const [cookingMode, setCookingMode] = useState(false);
@@ -67,7 +73,7 @@ export function RecipeDetailClient({
   const [showPrintPreview, setShowPrintPreview] = useState(false);
 
   const isOwner = recipe.owner_id === userId;
-  const canEdit = isOwner;
+  const lastUpdatedEdit = edits.find((edit) => edit.action === "updated");
 
   const handleFavorite = async () => {
     try {
@@ -268,6 +274,12 @@ export function RecipeDetailClient({
         </div>
 
         <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-10">
+          <RecipeAttribution
+            owner={recipe.owner}
+            createdAt={recipe.created_at}
+            lastEdit={lastUpdatedEdit}
+          />
+
           {recipe.description && (
             <section>
               <h2 className="font-serif text-2xl font-semibold text-fg mb-3">
@@ -395,6 +407,8 @@ export function RecipeDetailClient({
               </div>
             </section>
           )}
+
+          <RecipeEditHistory edits={edits} />
 
           <section>
             <h2 className="font-serif text-2xl font-semibold text-fg mb-4 flex items-center gap-2">

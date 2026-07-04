@@ -71,6 +71,25 @@ export interface Recipe {
   group_ids?: string[];
 }
 
+export interface RecipeEditChange {
+  field: string;
+  label: string;
+  before: string;
+  after: string;
+  details?: string[];
+}
+
+export interface RecipeEdit {
+  id: string;
+  recipe_id: string;
+  edited_by: string;
+  edited_at: string;
+  action: "created" | "updated";
+  summary: string;
+  changes: RecipeEditChange[];
+  editor?: Profile;
+}
+
 export interface RecipeComment {
   id: string;
   recipe_id: string;
