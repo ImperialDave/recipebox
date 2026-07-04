@@ -7,6 +7,7 @@ A warm, trustworthy digital heirloom cookbook. Store rich recipes with photos an
 - **Passwordless magic link + password authentication** via Firebase Auth
 - **Family groups** with Admin / Editor / Viewer role-based permissions
 - **Rich recipe management** — ingredients, instructions with timers, tags, categories, photos
+- **Scan from photo** — upload a recipe image and Gemini Flash extracts fields for review
 - **Powerful search & filters** — category pills, tag filters, time ranges, sort options
 - **Cooking Mode** — full-screen step-by-step with timers and check-off
 - **Print-optimized layouts** — high contrast, large type, clean margins
@@ -77,6 +78,8 @@ Open [http://localhost:3000](http://localhost:3000)
    - All `NEXT_PUBLIC_FIREBASE_*` variables
    - `FIREBASE_SERVICE_ACCOUNT_KEY` (paste JSON as single line)
    - `NEXT_PUBLIC_APP_URL` (your Railway domain, e.g. `https://www.recipevault.club`)
+   - `GEMINI_API_KEY` (for recipe photo scanning — [Google AI Studio](https://aistudio.google.com/apikey))
+   - `RECIPE_SCAN_DAILY_LIMIT` (optional, default `20`)
 5. Railway will auto-detect `railway.toml` and deploy
 
 After deploy, add your Railway domain to Firebase **Authorized domains**.

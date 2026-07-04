@@ -52,6 +52,53 @@ import { v4 as uuidv4 } from "uuid";
 interface RecipeFormProps {
   recipe?: Recipe;
   groups?: { id: string; name: string }[];
+  initialForm?: Partial<RecipeFormData>;
+}
+
+function buildFormState(
+  recipe?: Recipe,
+  initialForm?: Partial<RecipeFormData>,
+): RecipeFormData {
+  const base: RecipeFormData = {
+    title: recipe?.title || "",
+    description: recipe?.description || "",
+    hero_url: recipe?.hero_url || null,
+    gallery_urls: recipe?.gallery_urls || [],
+    prep_time_minutes: recipe?.prep_time_minutes || null,
+    cook_time_minutes: recipe?.cook_time_minutes || null,
+    total_time_minutes: recipe?.total_time_minutes || null,
+    servings: recipe?.servings || null,
+    difficulty: recipe?.difficulty || null,
+    category: recipe?.category || "Dinner",
+    tags: recipe?.tags || [],
+    status: recipe?.status || "published",
+    is_private: recipe?.is_private ?? true,
+    group_ids: recipe?.group_ids || [],
+    ingredients: recipe?.ingredients?.map((i) => ({
+      quantity: i.quantity,
+      unit: i.unit,
+      name: i.name,
+      prep_note: i.prep_note,
+      sort_order: i.sort_order,
+    })) || [{ quantity: "", unit: "", name: "", prep_note: "", sort_order: 0 }],
+    instructions: recipe?.instructions?.map((i) => ({
+      text: i.text,
+      timer_minutes: i.timer_minutes,
+      sort_order: i.sort_order,
+    })) || [{ text: "", timer_minutes: null, sort_order: 0 }],
+  };
+
+  if (!initialForm) return base;
+
+  return {
+    ...base,
+    ...initialForm,
+    gallery_urls: initialForm.gallery_urls ?? base.gallery_urls,
+    tags: initialForm.tags ?? base.tags,
+    group_ids: initialForm.group_ids ?? base.group_ids,
+    ingredients: initialForm.ingredients ?? base.ingredients,
+    instructions: initialForm.instructions ?? base.instructions,
+  };
 }
 
 function SortableIngredient({
@@ -201,39 +248,18 @@ function SortableInstruction({
   );
 }
 
-export function RecipeForm({ recipe, groups = [] }: RecipeFormProps) {
+export function RecipeForm({
+  recipe,
+  groups = [],
+  initialForm,
+}: RecipeFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const [form, setForm] = useState<RecipeFormData>({
-    title: recipe?.title || "",
-    description: recipe?.description || "",
-    hero_url: recipe?.hero_url || null,
-    gallery_urls: recipe?.gallery_urls || [],
-    prep_time_minutes: recipe?.prep_time_minutes || null,
-    cook_time_minutes: recipe?.cook_time_minutes || null,
-    total_time_minutes: recipe?.total_time_minutes || null,
-    servings: recipe?.servings || null,
-    difficulty: recipe?.difficulty || null,
-    category: recipe?.category || "Dinner",
-    tags: recipe?.tags || [],
-    status: recipe?.status || "published",
-    is_private: recipe?.is_private ?? true,
-    group_ids: recipe?.group_ids || [],
-    ingredients: recipe?.ingredients?.map((i) => ({
-      quantity: i.quantity,
-      unit: i.unit,
-      name: i.name,
-      prep_note: i.prep_note,
-      sort_order: i.sort_order,
-    })) || [{ quantity: "", unit: "", name: "", prep_note: "", sort_order: 0 }],
-    instructions: recipe?.instructions?.map((i) => ({
-      text: i.text,
-      timer_minutes: i.timer_minutes,
-      sort_order: i.sort_order,
-    })) || [{ text: "", timer_minutes: null, sort_order: 0 }],
-  });
+  const [form, setForm] = useState<RecipeFormData>(() =>
+    buildFormState(recipe, initialForm),
+  );
 
   const [ingredientIds] = useState(() => form.ingredients.map(() => uuidv4()));
   const [instructionIds] = useState(() =>
