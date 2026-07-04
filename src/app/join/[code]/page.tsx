@@ -40,7 +40,7 @@ export default function JoinPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-page p-4">
+    <div className="min-h-screen flex items-center justify-center auth-shell p-4">
       <Card className="w-full max-w-md text-center">
         <CardHeader>
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-subtle">

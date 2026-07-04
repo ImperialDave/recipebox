@@ -42,7 +42,7 @@ export function RecipeCard({
   if (view === "list") {
     return (
       <Link href={`/recipes/${recipe.id}`}>
-        <Card className="flex gap-4 p-4 hover:shadow-md transition-shadow">
+        <Card className="flex gap-4 p-4">
           <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-overlay recipe-image-frame">
             {recipe.hero_url ? (
               <Image
@@ -105,7 +105,7 @@ export function RecipeCard({
     <Link href={`/recipes/${recipe.id}`}>
       <Card
         className={cn(
-          "overflow-hidden group hover:shadow-lg transition-all duration-300",
+          "overflow-hidden group transition-all duration-300",
           selectable && selected && "ring-2 ring-ring",
         )}
         onClick={

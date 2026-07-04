@@ -12,9 +12,9 @@ export function ToastProvider() {
       theme={resolvedTheme}
       toastOptions={{
         style: {
-          background: "var(--color-elevated)",
-          color: "var(--color-fg)",
-          border: "1px solid var(--color-border)",
+          background: "var(--elevated)",
+          color: "var(--fg)",
+          border: "1px solid var(--border)",
         },
       }}
     />

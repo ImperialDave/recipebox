@@ -17,8 +17,8 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface/90 backdrop-blur-xl lg:hidden no-print">
-      <div className="flex items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t app-chrome-blur lg:hidden no-print">
+      <div className="flex items-center justify-around py-2 px-1">
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
@@ -34,9 +34,9 @@ export function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-[60px]",
+                "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[60px]",
                 item.highlight
-                  ? "bg-accent text-accent-fg -mt-4 shadow-elevated rounded-2xl px-4 py-3"
+                  ? "bg-accent text-accent-fg -mt-5 shadow-elevated rounded-2xl px-4 py-3 ring-2 ring-page"
                   : isActive
                     ? "text-accent"
                     : "text-fg-muted",

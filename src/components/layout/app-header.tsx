@@ -44,11 +44,11 @@ export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-surface/80 backdrop-blur-xl no-print">
+    <header className="sticky top-0 z-40 border-b app-chrome-blur no-print">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-accent-fg">
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-accent-fg shadow-glow transition-transform group-hover:scale-105">
               <BookOpen className="h-5 w-5" />
             </div>
             <span className="hidden font-serif text-lg font-semibold text-fg sm:block">
@@ -61,19 +61,20 @@ export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-muted" />
               <Input
                 placeholder="Search recipes, ingredients, tags..."
-                className="pl-10"
+                className="pl-10 bg-elevated/80"
                 value={searchQuery}
                 onChange={(e) => onSearch(e.target.value)}
               />
             </div>
           )}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
               onClick={cycleTheme}
               aria-label="Toggle theme"
+              className="text-fg-secondary hover:text-fg"
             >
               {resolvedTheme === "dark" ? (
                 <Sun className="h-4 w-4" />
@@ -89,18 +90,24 @@ export function AppHeader({ onSearch, searchQuery = "" }: AppHeaderProps) {
               }
               aria-label="Toggle large text"
               className={cn(
+                "text-fg-secondary hover:text-fg",
                 textSize === "large" && "bg-accent-subtle text-accent",
               )}
             >
               <Type className="h-4 w-4" />
             </Button>
             <Link href="/settings">
-              <Button variant="ghost" size="icon" aria-label="Settings">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Settings"
+                className="text-fg-secondary hover:text-fg"
+              >
                 <Settings className="h-4 w-4" />
               </Button>
             </Link>
             <Link href="/recipes/new">
-              <Button size="sm" className="hidden sm:flex">
+              <Button size="sm" className="hidden sm:flex shadow-glow">
                 <Plus className="h-4 w-4" />
                 Add Recipe
               </Button>

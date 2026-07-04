@@ -66,7 +66,7 @@ export default function OnboardingClient() {
 
   if (step === "welcome") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-page p-4">
+      <div className="min-h-screen flex items-center justify-center auth-shell p-4">
         <div className="w-full max-w-lg text-center">
           <h1 className="font-serif text-4xl font-bold text-fg mb-3">
             Welcome to {APP_NAME}! 🎉
@@ -120,7 +120,7 @@ export default function OnboardingClient() {
 
   if (step === "create") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-page p-4">
+      <div className="min-h-screen flex items-center justify-center auth-shell p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex items-center gap-3 mb-2">
@@ -177,7 +177,7 @@ export default function OnboardingClient() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-page p-4">
+    <div className="min-h-screen flex items-center justify-center auth-shell p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="font-serif text-2xl">
