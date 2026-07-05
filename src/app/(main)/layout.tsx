@@ -11,7 +11,7 @@ export default function MainLayout({
   return (
     <div className="flex min-h-screen bg-page">
       <SidebarNav />
-      <div className="flex-1 flex flex-col pb-20 lg:pb-0 min-w-0 bg-page">
+      <div className="flex-1 flex flex-col pb-mobile-nav lg:pb-0 min-w-0 bg-page">
         {children}
       </div>
       <MobileNav />

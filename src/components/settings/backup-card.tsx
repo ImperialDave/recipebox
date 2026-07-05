@@ -72,10 +72,39 @@ export function BackupCard() {
       }
 
       const blob = await res.blob();
+      const filename = backupZipFilename();
+      const file = new File([blob], filename, { type: "application/zip" });
+
+      if (
+        typeof navigator !== "undefined" &&
+        "share" in navigator &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: [file] })
+      ) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "Recipe Vault backup",
+          });
+          toast.success(
+            `Backup ready to save${count !== null ? ` (${count} recipes)` : ""}`,
+          );
+          await loadPreview();
+          return;
+        } catch (shareError) {
+          if (
+            shareError instanceof Error &&
+            shareError.name === "AbortError"
+          ) {
+            return;
+          }
+        }
+      }
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = backupZipFilename();
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       link.remove();

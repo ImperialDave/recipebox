@@ -14,6 +14,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { uploadRecipeImage } from "@/lib/actions/recipes";
+import {
+  isSupportedImageFile,
+  prepareImageFile,
+  prepareImageFileForUpload,
+} from "@/lib/image/prepare-image-file";
 import { parsedRecipeToFormData } from "@/lib/recipe-scan/to-form-data";
 import type { ParsedRecipeDraft } from "@/lib/recipe-scan/types";
 import type { RecipeFormData } from "@/lib/types";
@@ -77,11 +82,23 @@ export function RecipeScanFlow({
     onOpenChange(nextOpen);
   };
 
-  const handleFileChange = (selected: File | null) => {
+  const handleFileChange = async (selected: File | null) => {
     if (!selected) return;
-    setFile(selected);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(URL.createObjectURL(selected));
+    if (!isSupportedImageFile(selected)) {
+      toast.error("Please choose a JPG, PNG, WebP, or iPhone photo");
+      return;
+    }
+
+    try {
+      const prepared = await prepareImageFile(selected);
+      setFile(prepared);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(URL.createObjectURL(prepared));
+    } catch {
+      toast.error(
+        "Could not read this photo. Try another image or take a new picture.",
+      );
+    }
   };
 
   const handleScan = async () => {
@@ -130,7 +147,9 @@ export function RecipeScanFlow({
     try {
       let heroUrl: string | null = null;
       if (usePhotoAsHero && file) {
-        heroUrl = await uploadRecipeImage(file);
+        heroUrl = await uploadRecipeImage(
+          await prepareImageFileForUpload(file),
+        );
       }
 
       onApply(parsedRecipeToFormData(parsed, heroUrl));
@@ -194,12 +213,12 @@ export function RecipeScanFlow({
                 <div className="text-center">
                   <p className="font-medium text-fg">Take or upload a photo</p>
                   <p className="text-sm text-fg-secondary mt-1">
-                    JPG, PNG, or WebP up to 10 MB
+                    iPhone photos, JPG, PNG, or WebP up to 10 MB
                   </p>
                 </div>
                 <input
                   type="file"
-                  accept="image/jpeg,image/png,image/webp"
+                  accept="image/*,.heic,.heif"
                   capture="environment"
                   className="hidden"
                   onChange={(event) =>
@@ -214,7 +233,7 @@ export function RecipeScanFlow({
                 <input
                   ref={replaceInputRef}
                   type="file"
-                  accept="image/jpeg,image/png,image/webp"
+                  accept="image/*,.heic,.heif"
                   capture="environment"
                   className="hidden"
                   onChange={(event) =>

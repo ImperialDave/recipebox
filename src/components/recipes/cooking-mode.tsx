@@ -41,7 +41,12 @@ export function CookingMode({
     return () => clearInterval(interval);
   }, [timerActive, timerSeconds, currentStep]);
 
-  const startTimer = useCallback((minutes: number) => {
+  const startTimer = useCallback(async (minutes: number) => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "default") {
+        await Notification.requestPermission();
+      }
+    }
     setTimerSeconds(minutes * 60);
     setTimerActive(true);
   }, []);
@@ -65,7 +70,7 @@ export function CookingMode({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-page cooking-mode flex flex-col">
+    <div className="fixed inset-0 z-50 bg-page cooking-mode flex flex-col safe-area-padding">
       <header className="flex items-center justify-between p-4 border-b border-border bg-elevated">
         <h1 className="font-serif text-xl font-semibold text-fg truncate flex-1">
           {title}

@@ -8,6 +8,7 @@ A warm, trustworthy digital heirloom cookbook. Store rich recipes with photos an
 - **Family groups** with Admin / Editor / Viewer role-based permissions
 - **Rich recipe management** — ingredients, instructions with timers, tags, categories, photos
 - **Scan from photo** — upload a recipe image and Gemini Flash extracts fields for review
+- **iPhone-friendly** — HEIC photo support, safe-area layout, magic-link email confirm, iOS backup sharing
 - **Powerful search & filters** — category pills, tag filters, time ranges, sort options
 - **Cooking Mode** — full-screen step-by-step with timers and check-off
 - **Print-optimized layouts** — high contrast, large type, clean margins

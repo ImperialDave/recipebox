@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Please upload a JPG, PNG, or WebP image. iPhone HEIC photos are not supported yet.",
+          "Please upload a JPG, PNG, WebP, or iPhone photo (HEIC).",
       },
       { status: 400 },
     );

@@ -52,18 +52,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("frb-theme") as Theme | null;
-    const savedTextSize = localStorage.getItem(
-      "frb-text-size",
-    ) as TextSize | null;
+    let savedTheme: Theme | null = null;
+    let savedTextSize: TextSize | null = null;
+    try {
+      savedTheme = localStorage.getItem("frb-theme") as Theme | null;
+      savedTextSize = localStorage.getItem("frb-text-size") as TextSize | null;
+    } catch {
+      // Safari private mode
+    }
     if (savedTheme) setTheme(savedTheme);
     if (savedTextSize) setTextSize(savedTextSize);
   }, []);
 
   useEffect(() => {
     applyTheme(theme);
-    localStorage.setItem("frb-theme", theme);
-    localStorage.setItem("frb-text-size", textSize);
+    try {
+      localStorage.setItem("frb-theme", theme);
+      localStorage.setItem("frb-text-size", textSize);
+    } catch {
+      // Safari private mode
+    }
 
     const root = document.documentElement;
     root.classList.toggle("large-text", textSize === "large");

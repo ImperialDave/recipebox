@@ -69,26 +69,44 @@ export async function sendMagicLinkClient(email: string) {
     handleCodeInApp: true,
   };
   await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-  window.localStorage.setItem(EMAIL_KEY, email);
+  try {
+    window.localStorage.setItem(EMAIL_KEY, email);
+  } catch {
+    // Safari private mode still allows magic link with manual email confirm
+  }
 }
 
-export async function completeMagicLinkSignIn() {
+export function isMagicLinkCallback(): boolean {
+  return isSignInWithEmailLink(auth, window.location.href);
+}
+
+export function getStoredMagicLinkEmail(): string | null {
+  try {
+    return window.localStorage.getItem(EMAIL_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export async function completeMagicLinkSignInWithEmail(email: string) {
   if (!isSignInWithEmailLink(auth, window.location.href)) {
     throw new Error("Invalid sign-in link");
   }
 
-  let email = window.localStorage.getItem(EMAIL_KEY);
-  if (!email) {
-    email = window.prompt("Please enter your email to confirm sign-in");
-  }
-  if (!email) throw new Error("Email is required");
+  const normalizedEmail = email.trim();
+  if (!normalizedEmail) throw new Error("Email is required");
 
   const credential = await signInWithEmailLink(
     auth,
-    email,
+    normalizedEmail,
     window.location.href,
   );
-  window.localStorage.removeItem(EMAIL_KEY);
+
+  try {
+    window.localStorage.removeItem(EMAIL_KEY);
+  } catch {
+    // Safari private mode or cross-tab handoff from Mail
+  }
 
   await fetch("/api/auth/register", {
     method: "POST",
@@ -101,6 +119,14 @@ export async function completeMagicLinkSignIn() {
 
   await createSessionCookie(await credential.user.getIdToken());
   return credential.user;
+}
+
+export async function completeMagicLinkSignIn() {
+  const storedEmail = getStoredMagicLinkEmail();
+  if (!storedEmail) {
+    throw new Error("EMAIL_REQUIRED");
+  }
+  return completeMagicLinkSignInWithEmail(storedEmail);
 }
 
 export async function signOutClient() {

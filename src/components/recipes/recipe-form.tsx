@@ -45,6 +45,10 @@ import {
   updateRecipe,
   uploadRecipeImage,
 } from "@/lib/actions/recipes";
+import {
+  isSupportedImageFile,
+  prepareImageFileForUpload,
+} from "@/lib/image/prepare-image-file";
 import type { RecipeFormData, Recipe } from "@/lib/types";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -277,15 +281,21 @@ export function RecipeForm({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!isSupportedImageFile(file)) {
+      toast.error("Please choose a JPG, PNG, WebP, or iPhone photo");
+      return;
+    }
     setUploading(true);
     try {
-      const url = await uploadRecipeImage(file);
+      const prepared = await prepareImageFileForUpload(file);
+      const url = await uploadRecipeImage(prepared);
       setForm((f) => ({ ...f, hero_url: url }));
       toast.success("Photo uploaded");
     } catch {
-      toast.error("Upload failed");
+      toast.error("Upload failed. Try another photo.");
     } finally {
       setUploading(false);
+      e.target.value = "";
     }
   };
 
@@ -410,7 +420,8 @@ export function RecipeForm({
                   </span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,.heic,.heif"
+                    capture="environment"
                     className="hidden"
                     onChange={handleImageUpload}
                   />
@@ -747,7 +758,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <div className="flex gap-3 sticky bottom-20 lg:bottom-4 bg-page/95 backdrop-blur p-4 rounded-2xl border border-border">
+      <div className="flex gap-3 sticky bottom-mobile-actions lg:bottom-4 bg-page/95 backdrop-blur p-4 rounded-2xl border border-border">
         <Button
           size="lg"
           onClick={() => handleSubmit(false)}
