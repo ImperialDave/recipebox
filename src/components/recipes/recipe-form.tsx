@@ -29,16 +29,18 @@ import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  DEFAULT_CATEGORIES,
+  FOOD_CATEGORIES,
   SUGGESTED_TAGS,
   UNITS,
   DIFFICULTY_LEVELS,
+  UTILITY_CATEGORIES,
 } from "@/lib/constants";
 import {
   createRecipe,
@@ -515,11 +517,20 @@ export function RecipeForm({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {DEFAULT_CATEGORIES.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  {FOOD_CATEGORIES.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+                <SelectGroup>
+                  {UTILITY_CATEGORIES.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           </div>

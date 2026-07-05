@@ -3,7 +3,7 @@ export const APP_TAGLINE = "Collect, protect, and share the recipes you love";
 export const APP_SHORT_NAME = "Recipe Vault";
 export const APP_NAV_SUBTITLE = "Your recipe vault";
 
-export const DEFAULT_CATEGORIES = [
+export const FOOD_CATEGORIES = [
   "Breakfast & Brunch",
   "Lunch",
   "Dinner",
@@ -16,6 +16,22 @@ export const DEFAULT_CATEGORIES = [
   "Kid-Friendly Favorites",
   "Holiday & Special Occasions",
 ] as const;
+
+export const UTILITY_CATEGORIES = [
+  "Preserves & Canning",
+  "Remedies",
+  "Household Cleaners",
+  "Personal Care",
+  "Garden & Outdoor",
+  "Crafts & Activities",
+] as const;
+
+export const DEFAULT_CATEGORIES = [
+  ...FOOD_CATEGORIES,
+  ...UTILITY_CATEGORIES,
+] as const;
+
+export type RecipeCategory = (typeof DEFAULT_CATEGORIES)[number];
 
 export const SUGGESTED_TAGS = [
   "Quick & Easy",
@@ -32,6 +48,13 @@ export const SUGGESTED_TAGS = [
   "Low-Carb",
   "Freezer-Friendly",
   "Budget-Friendly",
+  "Homemade",
+  "Natural",
+  "Non-Toxic",
+  "Herbal",
+  "Essential Oils",
+  "Kid-Safe",
+  "Pet-Safe",
 ] as const;
 
 export const UNITS = [

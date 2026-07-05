@@ -1,9 +1,10 @@
 "use client";
 
 import {
-  DEFAULT_CATEGORIES,
+  FOOD_CATEGORIES,
   SUGGESTED_TAGS,
   TIME_RANGES,
+  UTILITY_CATEGORIES,
 } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -101,24 +102,41 @@ export function RecipeFilters({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <Badge
-          variant={!category ? "default" : "outline"}
-          className="cursor-pointer"
-          onClick={() => onCategoryChange("")}
-        >
-          All
-        </Badge>
-        {DEFAULT_CATEGORIES.map((cat) => (
+      <div className="space-y-2">
+        <div className="flex flex-wrap gap-2">
           <Badge
-            key={cat}
-            variant={category === cat ? "default" : "outline"}
+            variant={!category ? "default" : "outline"}
             className="cursor-pointer"
-            onClick={() => onCategoryChange(category === cat ? "" : cat)}
+            onClick={() => onCategoryChange("")}
           >
-            {cat}
+            All
           </Badge>
-        ))}
+          {FOOD_CATEGORIES.map((cat) => (
+            <Badge
+              key={cat}
+              variant={category === cat ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => onCategoryChange(category === cat ? "" : cat)}
+            >
+              {cat}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-fg-secondary w-full sm:w-auto">
+            Home & utility
+          </span>
+          {UTILITY_CATEGORIES.map((cat) => (
+            <Badge
+              key={cat}
+              variant={category === cat ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => onCategoryChange(category === cat ? "" : cat)}
+            >
+              {cat}
+            </Badge>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2">

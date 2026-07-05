@@ -66,6 +66,78 @@ function normalizeUnit(unit: string): string {
   return trimmed;
 }
 
+const CATEGORY_KEYWORDS: Partial<Record<(typeof DEFAULT_CATEGORIES)[number], string[]>> = {
+  "Preserves & Canning": [
+    "preserve",
+    "canning",
+    "pickle",
+    "pickling",
+    "ferment",
+    "jam",
+    "jelly",
+    "marmalade",
+  ],
+  Remedies: [
+    "remedy",
+    "remedies",
+    "wellness",
+    "herbal",
+    "salve",
+    "tincture",
+    "cough",
+    "cold",
+    "immune",
+  ],
+  "Household Cleaners": [
+    "cleaner",
+    "cleaners",
+    "cleaning",
+    "disinfect",
+    "laundry",
+    "detergent",
+    "degreaser",
+  ],
+  "Personal Care": [
+    "personal care",
+    "soap",
+    "lotion",
+    "shampoo",
+    "beauty",
+    "balm",
+    "scrub",
+    "deodorant",
+    "toothpaste",
+  ],
+  "Garden & Outdoor": [
+    "garden",
+    "outdoor",
+    "compost",
+    "fertilizer",
+    "pest",
+    "plant",
+    "lawn",
+  ],
+  "Crafts & Activities": [
+    "craft",
+    "crafts",
+    "diy",
+    "playdough",
+    "slime",
+    "candle",
+    "activity",
+    "activities",
+  ],
+};
+
+function matchCategoryByKeywords(normalized: string): string | null {
+  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (keywords.some((keyword) => normalized.includes(keyword))) {
+      return category;
+    }
+  }
+  return null;
+}
+
 function matchCategory(category: string | null): string {
   if (!category?.trim()) return "Dinner";
   const normalized = category.trim().toLowerCase();
@@ -79,7 +151,9 @@ function matchCategory(category: string | null): string {
       item.toLowerCase().includes(normalized) ||
       normalized.includes(item.toLowerCase()),
   );
-  return fuzzy || "Dinner";
+  if (fuzzy) return fuzzy;
+
+  return matchCategoryByKeywords(normalized) || "Dinner";
 }
 
 function matchDifficulty(difficulty: string | null): string | null {
