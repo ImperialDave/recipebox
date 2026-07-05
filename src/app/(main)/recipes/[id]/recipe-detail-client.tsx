@@ -30,6 +30,11 @@ import {
 } from "@/components/ui/dialog";
 import { CookingMode } from "@/components/recipes/cooking-mode";
 import { PrintView } from "@/components/recipes/print-view";
+import { ServingScaler } from "@/components/recipes/serving-scaler";
+import {
+  getScaleRatio,
+  scaleIngredientQuantity,
+} from "@/lib/ingredient-quantity";
 import { RecipeAttribution } from "@/components/recipes/recipe-attribution";
 import { RecipeEditHistory } from "@/components/recipes/recipe-edit-history";
 import { formatMinutes } from "@/lib/utils";
@@ -68,7 +73,10 @@ export function RecipeDetailClient({
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [scaleFactor, setScaleFactor] = useState(1);
+  const baseServings = recipe.servings && recipe.servings > 0 ? recipe.servings : null;
+  const [targetServings, setTargetServings] = useState(baseServings ?? 4);
+  const scaleRatio =
+    baseServings != null ? getScaleRatio(baseServings, targetServings) : 1;
   const [includePhotoInPrint, setIncludePhotoInPrint] = useState(true);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
 
@@ -130,7 +138,10 @@ export function RecipeDetailClient({
       await addToShoppingList(
         unchecked.map((i) => ({
           ingredient_name: i.name,
-          quantity: i.quantity,
+          quantity: scaleIngredientQuantity(i.quantity, scaleRatio, {
+            unit: i.unit,
+            ingredientName: i.name,
+          }),
           unit: i.unit,
         })),
       );
@@ -145,28 +156,11 @@ export function RecipeDetailClient({
     setTimeout(() => window.print(), 300);
   };
 
-  const scaledQuantity = (qty: string) => {
-    if (!qty || scaleFactor === 1) return qty;
-    const num = parseFloat(qty);
-    if (isNaN(num)) return qty;
-    const scaled = num * scaleFactor;
-    if (scaled === Math.floor(scaled)) return scaled.toString();
-    const fractions: Record<string, string> = {
-      "0.25": "¼",
-      "0.33": "⅓",
-      "0.5": "½",
-      "0.67": "⅔",
-      "0.75": "¾",
-    };
-    const whole = Math.floor(scaled);
-    const frac = scaled - whole;
-    const fracStr = Object.entries(fractions).find(
-      ([k]) => Math.abs(parseFloat(k) - frac) < 0.05,
-    )?.[1];
-    if (whole && fracStr) return `${whole} ${fracStr}`;
-    if (fracStr) return fracStr;
-    return scaled.toFixed(1);
-  };
+  const displayQuantity = (quantity: string, unit: string, name: string) =>
+    scaleIngredientQuantity(quantity, scaleRatio, {
+      unit,
+      ingredientName: name,
+    });
 
   if (cookingMode && recipe.instructions) {
     return (
@@ -292,30 +286,41 @@ export function RecipeDetailClient({
           )}
 
           <section>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-4">
               <h2 className="font-serif text-2xl font-semibold text-fg">
                 Ingredients
               </h2>
-              <div className="flex items-center gap-3">
-                {recipe.servings && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-fg-secondary">Scale:</span>
-                    {[0.5, 1, 1.5, 2, 3].map((factor) => (
-                      <Button
-                        key={factor}
-                        variant={scaleFactor === factor ? "secondary" : "ghost"}
-                        size="sm"
-                        onClick={() => setScaleFactor(factor)}
-                      >
-                        {factor}x
-                      </Button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {baseServings != null ? (
+                <ServingScaler
+                  baseServings={baseServings}
+                  targetServings={targetServings}
+                  onChange={setTargetServings}
+                />
+              ) : (
+                <p className="text-sm text-fg-muted max-w-xs text-right">
+                  Add a serving size in{" "}
+                  {canEdit ? (
+                    <Link
+                      href={`/recipes/${recipe.id}/edit`}
+                      className="text-accent hover:underline"
+                    >
+                      edit recipe
+                    </Link>
+                  ) : (
+                    "recipe settings"
+                  )}{" "}
+                  to scale ingredients.
+                </p>
+              )}
             </div>
             <ul className="space-y-3">
-              {recipe.ingredients?.map((ing) => (
+              {recipe.ingredients?.map((ing) => {
+                const quantity = displayQuantity(
+                  ing.quantity,
+                  ing.unit,
+                  ing.name,
+                );
+                return (
                 <li key={ing.id} className="flex items-start gap-3">
                   <Checkbox
                     checked={checkedIngredients.has(ing.id)}
@@ -336,8 +341,7 @@ export function RecipeDetailClient({
                         "line-through text-fg-muted",
                     )}
                   >
-                    {scaledQuantity(ing.quantity) &&
-                      `${scaledQuantity(ing.quantity)} `}
+                    {quantity && `${quantity} `}
                     {ing.unit && `${ing.unit} `}
                     <strong>{ing.name}</strong>
                     {ing.prep_note && (
@@ -347,7 +351,8 @@ export function RecipeDetailClient({
                     )}
                   </span>
                 </li>
-              ))}
+                );
+              })}
             </ul>
             <Button
               variant="outline"
