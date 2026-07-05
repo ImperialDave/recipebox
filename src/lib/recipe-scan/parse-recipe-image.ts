@@ -1,8 +1,7 @@
 import { DEFAULT_CATEGORIES, DIFFICULTY_LEVELS } from "@/lib/constants";
+import { getGeminiApiKey, getGeminiModel } from "./gemini-config";
 import { normalizeParsedRecipe } from "./normalize-parsed-recipe";
 import type { ParsedRecipeDraft } from "./types";
-
-const GEMINI_MODEL = "gemini-2.0-flash";
 
 const SYSTEM_PROMPT = `You extract recipe data from a photo of a recipe card, cookbook page, or screenshot.
 
@@ -46,21 +45,36 @@ interface GeminiResponse {
     content?: {
       parts?: Array<{ text?: string }>;
     };
+    finishReason?: string;
   }>;
-  error?: { message?: string };
+  error?: { message?: string; status?: string; code?: number };
+}
+
+function extractGeminiError(payload: GeminiResponse, status: number): string {
+  if (payload.error?.message) {
+    return payload.error.message;
+  }
+  const reason = payload.candidates?.[0]?.finishReason;
+  if (reason && reason !== "STOP") {
+    return `Gemini could not complete the scan (${reason})`;
+  }
+  return `Could not parse recipe from photo (HTTP ${status})`;
 }
 
 export async function parseRecipeImage(
   buffer: Buffer,
   mimeType: string,
 ): Promise<ParsedRecipeDraft> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getGeminiApiKey();
   if (!apiKey) {
-    throw new Error("Recipe scanning is not configured");
+    throw new Error(
+      "Recipe scanning is not configured. Set GEMINI_API_KEY in Railway.",
+    );
   }
 
+  const model = getGeminiModel();
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -89,9 +103,7 @@ export async function parseRecipeImage(
   const payload = (await response.json()) as GeminiResponse;
 
   if (!response.ok) {
-    throw new Error(
-      payload.error?.message || "Could not parse recipe from photo",
-    );
+    throw new Error(extractGeminiError(payload, response.status));
   }
 
   const text = payload.candidates?.[0]?.content?.parts?.[0]?.text;

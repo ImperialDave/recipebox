@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/firebase/auth-server";
+import { isRecipeScanConfigured } from "@/lib/recipe-scan/gemini-config";
+import {
+  inferImageMimeType,
+  isAllowedImageMimeType,
+} from "@/lib/recipe-scan/mime-type";
 import { parseRecipeImage } from "@/lib/recipe-scan/parse-recipe-image";
 import {
   checkRecipeScanRateLimit,
@@ -8,13 +13,6 @@ import {
 
 const MAX_IMAGE_BYTES =
   (Number(process.env.RECIPE_SCAN_MAX_IMAGE_MB) || 10) * 1024 * 1024;
-
-const ALLOWED_MIME_TYPES = new Set([
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-]);
 
 export async function POST(request: Request) {
   const user = await getSessionUser();
@@ -42,9 +40,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Image file is required" }, { status: 400 });
   }
 
-  if (!ALLOWED_MIME_TYPES.has(file.type)) {
+  if (!isRecipeScanConfigured()) {
     return NextResponse.json(
-      { error: "Please upload a JPG, PNG, or WebP image" },
+      {
+        error:
+          "Recipe scanning is not configured. Add GEMINI_API_KEY to Railway and redeploy.",
+      },
+      { status: 503 },
+    );
+  }
+
+  const mimeType = inferImageMimeType(file);
+  if (!isAllowedImageMimeType(mimeType)) {
+    return NextResponse.json(
+      {
+        error:
+          "Please upload a JPG, PNG, or WebP image. iPhone HEIC photos are not supported yet.",
+      },
       { status: 400 },
     );
   }
@@ -58,7 +70,7 @@ export async function POST(request: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const parsed = await parseRecipeImage(buffer, file.type);
+    const parsed = await parseRecipeImage(buffer, mimeType!);
     await recordRecipeScan(user.uid);
 
     const updatedLimit = await checkRecipeScanRateLimit(user.uid);
