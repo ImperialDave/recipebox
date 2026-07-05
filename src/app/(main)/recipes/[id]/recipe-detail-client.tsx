@@ -174,7 +174,11 @@ export function RecipeDetailClient({
 
   return (
     <>
-      <PrintView recipe={recipe} includePhoto={includePhotoInPrint} />
+      <PrintView
+        recipe={recipe}
+        includePhoto={includePhotoInPrint}
+        targetServings={baseServings != null ? targetServings : undefined}
+      />
 
       <div className="no-print">
         <div className="relative">

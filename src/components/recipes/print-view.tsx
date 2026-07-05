@@ -4,6 +4,10 @@ import Image from "next/image";
 import { formatMinutes } from "@/lib/utils";
 import { RecipeAttribution } from "@/components/recipes/recipe-attribution";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
+import {
+  getScaleRatio,
+  scaleIngredientQuantity,
+} from "@/lib/ingredient-quantity";
 import type { Recipe } from "@/lib/types";
 import { format } from "date-fns";
 
@@ -11,14 +15,28 @@ interface PrintViewProps {
   recipe: Recipe;
   groupName?: string;
   includePhoto?: boolean;
+  /** When set, ingredient quantities and servings reflect this scaled count. */
+  targetServings?: number;
 }
 
 export function PrintView({
   recipe,
   groupName,
   includePhoto = true,
+  targetServings,
 }: PrintViewProps) {
   const printedDate = format(new Date(), "MMMM d, yyyy");
+  const baseServings =
+    recipe.servings && recipe.servings > 0 ? recipe.servings : null;
+  const effectiveTarget =
+    targetServings != null && targetServings > 0
+      ? targetServings
+      : baseServings;
+  const scaleRatio =
+    baseServings != null && effectiveTarget != null
+      ? getScaleRatio(baseServings, effectiveTarget)
+      : 1;
+  const isScaled = scaleRatio !== 1 && baseServings != null;
 
   return (
     <div className="print-recipe print-only">
@@ -57,9 +75,15 @@ export function PrintView({
               <strong>Total:</strong> {formatMinutes(recipe.total_time_minutes)}
             </span>
           )}
-          {recipe.servings && (
+          {effectiveTarget != null && (
             <span>
-              <strong>Servings:</strong> {recipe.servings}
+              <strong>Servings:</strong> {effectiveTarget}
+              {isScaled && baseServings != null && (
+                <span className="text-gray-500">
+                  {" "}
+                  (scaled from {baseServings})
+                </span>
+              )}
             </span>
           )}
         </div>
@@ -83,18 +107,35 @@ export function PrintView({
         </div>
       )}
 
+      {isScaled && effectiveTarget != null && (
+        <p className="mb-4 text-sm text-gray-600 italic">
+          Quantities scaled for {effectiveTarget} servings
+          {baseServings != null ? ` (original recipe: ${baseServings})` : ""}.
+        </p>
+      )}
+
       <h2 className="font-serif text-xl font-bold mb-3 mt-6">Ingredients</h2>
       <ul className="ingredients-grid list-none space-y-1 mb-8">
-        {recipe.ingredients?.map((ing) => (
-          <li key={ing.id} className="flex gap-1">
-            <span>
-              {ing.quantity && `${ing.quantity} `}
-              {ing.unit && `${ing.unit} `}
-              <strong>{ing.name}</strong>
-              {ing.prep_note && `, ${ing.prep_note}`}
-            </span>
-          </li>
-        ))}
+        {recipe.ingredients?.map((ing) => {
+          const quantity =
+            ing.quantity && isScaled
+              ? scaleIngredientQuantity(ing.quantity, scaleRatio, {
+                  unit: ing.unit,
+                  ingredientName: ing.name,
+                })
+              : ing.quantity;
+
+          return (
+            <li key={ing.id} className="flex gap-1">
+              <span>
+                {quantity && `${quantity} `}
+                {ing.unit && `${ing.unit} `}
+                <strong>{ing.name}</strong>
+                {ing.prep_note && `, ${ing.prep_note}`}
+              </span>
+            </li>
+          );
+        })}
       </ul>
 
       <h2 className="font-serif text-xl font-bold mb-3">Instructions</h2>
